@@ -6,7 +6,7 @@ The methods from this package are based on a paper published in [Conservation Bi
 
 ## Prerequisites
 
-This package relies on ´igraph´, ´fields´, ´sp´ and ´stats´. If there are any problem installing maxflow, ensure these are working.
+This package relies on `igraph`, `fields`, `sp` and `stats`. If there are any problem installing migflow, ensure these are working.
 
 
 ## Installing
@@ -20,12 +20,12 @@ install.packages("devtools")
 Once devtools is installed, use:
 
 ```r
-devtools::install_github("KiranLDA/maxflow")
+devtools::install_github("KiranLDA/migflow")
 ```
 
 ## Load and test
 
-The package relies on there being a little tracking data (start & stop latitude and longitude of a migratory movement) and a list of potential stopover sites with counts. The method then estimates the likelihood of individuals moving between sites based on the distance between those sites and the relative number of individuals recorded at each site and allocates the population through this network.
+The package relies on there being a little tracking data (start & stop latitude and longitude of a migratory movement) and a list of potential stopover sites that animals can use with counts. The method then estimates the likelihood of individuals moving between sites based on the distance between those sites and the relative number of individuals recorded at each site and allocates the population through this network.
 
 ```r
 # load library
@@ -97,6 +97,7 @@ prioritiseFLOW(rand_net$network, rand_net$sites)
 ```
 
 <img align="center" src="https://raw.githubusercontent.com/KiranLDA/migflow/master/pictures/fewer%20edges.png">
+
 ## Authors
 
 Kiran Dhanjal-Adams
