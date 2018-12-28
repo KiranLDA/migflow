@@ -1,0 +1,16 @@
+Package: migflow
+Type: Package
+Title: Calculates the maximum flow through a network using integel linear programming
+Version: 0.1.0
+Author: Kiran Dhanjal-Adams
+Maintainer: Kiran Dhanjal-Adams <kiran.dhanjaladams@uqconnect.edu.au>
+Description: This package calculates the maximum flow through a network using integel linear programming.
+License: file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.1.0
+Imports:
+    fields,
+    sp,
+    stats,
+    igraph
