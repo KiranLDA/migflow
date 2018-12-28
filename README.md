@@ -1,6 +1,6 @@
 # Package migflow
 
-<img align="center" src="https://kirandhanjaladams.weebly.com/uploads/8/0/0/5/80051220/turnstones_1_orig.png">
+<img align="center" src="https://github.com/KiranLDA/migflow/blob/master/pictures/68747470733a2f2f6b6972616e6468616e6a616c6164616d732e776565626c792e636f6d2f75706c6f6164732f382f302f302f352f38303035313232302f7475726e73746f6e65735f315f6f7269672e706e67.png">
 
 The methods from this package are based on a paper published in [Conservation Biology](https://doi.org/10.1111/cobi.12842). The packages provides a set of functions to set up a migratory connectivity matrix, and then use this matrix to calculate the maximum flow of birds/animal through the migratory network, and then prioritise sites for conservation.
 
