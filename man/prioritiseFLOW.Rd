@@ -29,4 +29,11 @@ rand_net = randomNET(nsites=15,pop=pop)
 # priotise sites according to flow through network
 prioritiseFLOW(rand_net$network, rand_net$sites)
 
+# with fewer edges
+pop=100000
+rand_net = randomNET(nsites=15,pop=pop, nedges=40)
+
+# priotise sites according to flow through network
+prioritiseFLOW(rand_net$network, rand_net$sites)
+
 }
