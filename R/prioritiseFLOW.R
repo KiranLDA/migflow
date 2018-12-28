@@ -35,7 +35,8 @@ prioritiseFLOW <- function(network, sites, method ="igraph", plot = TRUE){
       par(mar=c(0,0,0,0))
       index=2:(nrow(sites)-1)
       plot(sites$Lon[index], sites$Lat[index], pch=16,
-           cex=0)
+           cex=0,
+           axes=F)
     }
 
     nodes = get.edgelist(weight, names=TRUE)
@@ -133,7 +134,9 @@ prioritiseFLOW <- function(network, sites, method ="igraph", plot = TRUE){
     }
     if (plot == T){
       par(mar=c(4,4,1,1))
-      plot(prioritisation$Pop_Flow, type="o",pch=16)
+      plot(prioritisation$Pop_Flow, type="o",pch=16,
+           xlab="# Sites Removed",
+           ylab="Population size")
     }
   }
   return(list( method = method,
