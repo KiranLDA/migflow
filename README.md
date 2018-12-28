@@ -82,7 +82,7 @@ This uses a reverse greedy approch to find sites which contribute least to popul
 prioritiseFLOW(rand_net$network, rand_net$sites)
 ```
 
-<img align="center" src="https://raw.githubusercontent.com/KiranLDA/maxflow/master/pictures/network%20prioritisation.png">
+<img align="center" src="https://raw.githubusercontent.com/KiranLDA/migflow/master/pictures/network%20prioritisation.png">
 
 
 This allows us to compare with networks, with for instance fewer edges
@@ -96,7 +96,7 @@ rand_net = randomNET(nsites=15,pop=pop, nedges=40)
 prioritiseFLOW(rand_net$network, rand_net$sites)
 ```
 
-<img align="center" src="https://raw.githubusercontent.com/KiranLDA/maxflow/master/pictures/fewer%20edges.png">
+<img align="center" src="https://raw.githubusercontent.com/KiranLDA/migflow/master/pictures/fewer%20edges.png">
 ## Authors
 
 Kiran Dhanjal-Adams
