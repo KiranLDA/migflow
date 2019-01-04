@@ -86,7 +86,7 @@ prioritiseFLOW(rand_net$network, rand_net$sites)
 <img align="center" src="https://raw.githubusercontent.com/KiranLDA/migflow/master/pictures/network%20prioritisation.png">
 
 
-This allows us to compare with networks, with for instance fewer edges
+### This allows us to compare with networks, with for instance fewer edges
 
 ```r
 # with fewer edges
@@ -99,6 +99,27 @@ prioritiseFLOW(rand_net$network, rand_net$sites)
 
 <img align="center" src="https://raw.githubusercontent.com/KiranLDA/migflow/master/pictures/fewer%20edges.png">
 
+### Describing networks using curve shape
+
+```r
+pop=100000
+rand_net = randomNET(nsites=100,nbreeding=3, nwintering=3,pop=pop, mean_dist = 8000, sd_dist=9000, plot=F)
+
+# priotise sites according to flow through network
+prioritisation = prioritiseFLOW(rand_net$network, rand_net$sites, plot=F)
+
+y=(prioritisation$prioritisation$Pop_Flow/pop)
+x=(1:length(prioritisation$prioritisation$Pop_Flow))/length(prioritisation$prioritisation$Pop_Flow)
+
+# calculate area under curve
+AUC = curvCALC(x,y)
+par(mfrow=c(1,1), mar=c(4,4,2,1))
+plot(x,y,type="o",pch=20, 
+      xlab = "proportion of sites lost",
+      ylab = "proportion of population lost",
+      main = paste0("Curve = ",AUC))
+```
+<img align="center" src="https://raw.githubusercontent.com/KiranLDA/migflow/master/pictures/AUC.png">
 ## Authors
 
 Kiran Dhanjal-Adams
