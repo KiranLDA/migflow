@@ -120,6 +120,8 @@ plot(x,y,type="o",pch=20,
       main = paste0("Curve = ",AUC))
 ```
 <img align="center" src="https://raw.githubusercontent.com/KiranLDA/migflow/master/pictures/AUC.png">
+
+
 ## Authors
 
 Kiran Dhanjal-Adams
