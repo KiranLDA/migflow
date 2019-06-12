@@ -10,6 +10,8 @@
 #' @name migflow
 #' @import fields
 #' @import sp
-#' @import stats
 #' @import igraph
+#' @importFrom graphics par segments points
+#' @importFrom maptools gzAzimuth
+#' @importFrom stats aggregate approxfun density rnorm runif
 NULL

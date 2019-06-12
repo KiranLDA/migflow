@@ -10,7 +10,7 @@
 #' @examples
 #' dta <- data.frame(Site= LETTERS[1:4], Lat= 1:4, Lon= 5:8, Pop=100:103)
 #' dist <- point2DIST(dta)
-#' absAZIMUTH(diat=dist, lonlats=dta)
+#' absAZIMUTH(dist=dist, lonlats=dta)
 #'
 #' @importFrom maptools gzAzimuth
 #'

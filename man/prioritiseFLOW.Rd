@@ -4,7 +4,8 @@
 \alias{prioritiseFLOW}
 \title{Prioritise sites according to population flow}
 \usage{
-prioritiseFLOW(network, sites, method = "igraph", plot = TRUE)
+prioritiseFLOW(network, sites, method = "igraph", toplot = TRUE,
+  pop = 1e+05)
 }
 \arguments{
 \item{network}{adjacency network describing where birds are going}
@@ -13,7 +14,9 @@ prioritiseFLOW(network, sites, method = "igraph", plot = TRUE)
 
 \item{method}{max_flow method, currently that of igraph, but will also support gurobi or lpsolve}
 
-\item{plot}{TRUE/FALSE to determine whether the output is plotted or not}
+\item{toplot}{TRUE/FALSE to determine whether the output is plotted or not}
+
+\item{pop}{number of individuals in the population}
 }
 \value{
 a list containting the prioritisation (as a list of the sites in the order they are removed), the network which was randomly generated,

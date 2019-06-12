@@ -7,9 +7,9 @@
 popPROP(network, population)
 }
 \arguments{
-\item{population}{This is the total size of the populaiton or number of individuals allowed to flow through the network}
+\item{network}{network of connections between sites}
 
-\item{dta}{This is a dataframe. Columns of interest must be named: Site, Lat (for latitude), Lon (for longitude).}
+\item{population}{This is the total size of the populaiton or number of individuals allowed to flow through the network}
 }
 \value{
 A matrix containing the proportion of the population able to flow into that

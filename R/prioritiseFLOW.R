@@ -5,7 +5,8 @@
 #' @param network adjacency network describing where birds are going
 #' @param sites network sites including latitude and longitude, and population count at each site
 #' @param method max_flow method, currently that of igraph, but will also support gurobi or lpsolve
-#' @param plot TRUE/FALSE to determine whether the output is plotted or not
+#' @param toplot TRUE/FALSE to determine whether the output is plotted or not
+#' @param pop number of individuals in the population
 #'
 #' @return a list containting the prioritisation (as a list of the sites in the order they are removed), the network which was randomly generated,
 #' the tracks that were randomly generated, and the sites that were randomly generated for animals to use.
@@ -25,8 +26,11 @@
 #' prioritiseFLOW(rand_net$network, rand_net$sites)
 #'
 #' @import igraph
+#' @importFrom graphics par segments points
+#' @importFrom stats aggregate
+#'
 #' @export
-prioritiseFLOW <- function(network, sites, method ="igraph", plot = TRUE){
+prioritiseFLOW <- function(network, sites, method ="igraph", toplot = TRUE, pop = 100000){
   if (method == "igraph"){
 
     #created a weigted igraph network
@@ -37,7 +41,7 @@ prioritiseFLOW <- function(network, sites, method ="igraph", plot = TRUE){
                     target = V(weight)["supersink"], capacity = E(weight)$weight )
 
     # plot flow network
-    if (plot == T){
+    if (toplot == TRUE){
       par(mfrow=c(1,2))
       par(mar=c(0,0,0,0))
       index=2:(nrow(sites)-1)
@@ -57,7 +61,7 @@ prioritiseFLOW <- function(network, sites, method ="igraph", plot = TRUE){
 
     nodes2 = nodes[nodes$V1 != "supersource" & nodes$V2 != "supersink" ,]
 
-    if (plot == T){
+    if (toplot == TRUE){
       index=2:(nrow(nodes2)-1)
       segments(x0 = nodes2$Lon_from[index],
                y0 = nodes2$Lat_from[index],
@@ -85,7 +89,7 @@ prioritiseFLOW <- function(network, sites, method ="igraph", plot = TRUE){
     nodeflow$Category = as.numeric(as.character(nodeflow$Category))
 
     # plot sites
-    if (plot == T){
+    if (toplot == TRUE){
       nodeflowplot = nodeflow[order(nodeflow$Category),]
       index=as.numeric(nodeflowplot$Category)+1
       points(sites$Lon[index],
@@ -139,7 +143,7 @@ prioritiseFLOW <- function(network, sites, method ="igraph", plot = TRUE){
       sites = sites[!(sites$Site %in% as.character(nodeflow$Category[to_remove])),]
 
     }
-    if (plot == T){
+    if (toplot == TRUE){
       par(mar=c(4,4,1,1))
       plot(prioritisation$Pop_Flow, type="o",pch=16,
            xlab="# Sites Removed",

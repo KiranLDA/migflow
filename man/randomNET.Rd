@@ -14,6 +14,10 @@ randomNET(nsites = 10, nedges = "ALL", nbreeding = 3,
 
 \item{nedges}{number of edges in the network. If all sites should be connected then use nedges="ALL"}
 
+\item{nbreeding}{Number of breeding sites}
+
+\item{nwintering}{Number of wintering sites}
+
 \item{pop}{population size flowing through network}
 
 \item{mean_dist}{average distance the species can travel (this can be estimated from real data)}
@@ -34,8 +38,4 @@ the tracks that were randomly generated, and the sites that were randomly genera
 }
 \description{
 This function generates a random migratory network
-}
-\examples{
-randomNET()
-
 }

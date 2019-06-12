@@ -1,6 +1,8 @@
 #' Make a distance matrix
 #'
 #' @param dta This is a dataframe. Columns of interest must be named: Site, Lat (for latitude), Lon (for longitude).
+#' @param miles TRUE/FALSE. whether or not to calculate distance in miles. if FALSE, then estimates in kilometres
+#' @param proj4string sp projection for latitude longitude
 #'
 #' @return A distance matrix in kilometres between all pairs sites
 #'
@@ -10,6 +12,7 @@
 #'
 #' @importFrom fields rdist.earth
 #' @importFrom sp SpatialPoints CRS
+#'
 #' @export
 point2DIST <- function(dta, miles=FALSE,
                        proj4string = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs "){

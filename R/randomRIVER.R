@@ -5,6 +5,7 @@
 #' @param nsites number of sites to be generated in the network
 #' @param nbreeding number of breeding sites. If all branch ends should be breeding sites then use "ALL"
 #' @param toplot TRUE/FALSE to determine whether the output is plotted or not
+#' @param pop population size flowing through network
 #' @param minforks minimum number of forks in a river branch
 #' @param maxforks maximum number of forks in a river branch
 #'
@@ -13,11 +14,12 @@
 #'
 #' @examples
 #' par(mfrow=c(1,1))
-#' randomRIVER(nsites = 20, toplot=T)
-#' randomRIVER(nsites = 50, toplot=T, nbreeding="ALL")
+#' randomRIVER(nsites = 20, toplot=TRUE)
+#' randomRIVER(nsites = 50, toplot=TRUE, nbreeding="ALL")
 #'
 #'
 #' @import igraph
+#' @importFrom stats runif
 #' @export
 randomRIVER <- function(nsites = 50,
                        pop = 100000,
@@ -162,7 +164,7 @@ randomRIVER <- function(nsites = 50,
   site_list$Pop <- c(pop,sizes, pop)
   return(list( network = network,
                # tracks = tracks,
-               sites = sites  ))
+               sites = site_list  ))
 
 }
 

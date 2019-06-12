@@ -9,6 +9,10 @@ point2DIST(dta, miles = FALSE,
 }
 \arguments{
 \item{dta}{This is a dataframe. Columns of interest must be named: Site, Lat (for latitude), Lon (for longitude).}
+
+\item{miles}{TRUE/FALSE. whether or not to calculate distance in miles. if FALSE, then estimates in kilometres}
+
+\item{proj4string}{sp projection for latitude longitude}
 }
 \value{
 A distance matrix in kilometres between all pairs sites

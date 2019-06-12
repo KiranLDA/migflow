@@ -7,23 +7,11 @@
 curvCALC(x, y, digits = 3)
 }
 \arguments{
-\item{nsites}{number of sites to be generated in the network}
+\item{x}{value for x axis, typically number or proportion of sites lost}
 
-\item{nedges}{number of edges in the network. If all sites should be connected then use nedges="ALL"}
+\item{y}{value for y axis, typically population lost or proportion of population lost}
 
-\item{pop}{population size flowing through network}
-
-\item{mean_dist}{average distance the species can travel (this can be estimated from real data)}
-
-\item{sd_dist}{standard deviation of the distances a species can travel (this can be estimated from real data)}
-
-\item{Latrange}{geographic range of species, by default latitude restricted to c(-20,40),}
-
-\item{Lonrange}{geographic range of species, by default longitude restricted to c(-10,10),}
-
-\item{Poprange}{min and max population sizes to be randomly generated, by default c(100,10000)}
-
-\item{plot}{TRUE/FALSE to determine whether the output is plotted or not}
+\item{digits}{number of digits to round the result to}
 }
 \value{
 a list containting the network which was randomly generated,
@@ -35,13 +23,15 @@ This function generates a random migratory network
 \examples{
 
 pop=100000
-rand_net = randomNET(nsites=100,nbreeding=3, nwintering=3,pop=pop, mean_dist = 8000, sd_dist=9000, plot=F)
+rand_net = randomNET(nsites=100,nbreeding=3, nwintering=3,pop=pop,
+                     mean_dist = 8000, sd_dist=9000, toplot=FALSE)
 
 # priotise sites according to flow through network
-prioritisation = prioritiseFLOW(rand_net$network, rand_net$sites, plot=F)
+prioritisation = prioritiseFLOW(rand_net$network, rand_net$sites, toplot=FALSE)
 
 y=(prioritisation$prioritisation$Pop_Flow/pop)
-x=(1:length(prioritisation$prioritisation$Pop_Flow))/length(prioritisation$prioritisation$Pop_Flow)
+x=((1:length(prioritisation$prioritisation$Pop_Flow))/
+    length(prioritisation$prioritisation$Pop_Flow))
 
 
 # calculate area under curve

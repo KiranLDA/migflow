@@ -1,6 +1,6 @@
 # Package migflow
 
-<img align="center" src="https://github.com/KiranLDA/migflow/blob/master/pictures/68747470733a2f2f6b6972616e6468616e6a616c6164616d732e776565626c792e636f6d2f75706c6f6164732f382f302f302f352f38303035313232302f7475726e73746f6e65735f315f6f7269672e706e67.png">
+<img align="center" src="https://github.com/KiranLDA/migflow/blob/master/pictures/687474707.png">
 Turnestones, Copyright (c) Kiran Dhanjal-Adams
 
 The methods from this package are based on a paper published in [Conservation Biology](https://doi.org/10.1111/cobi.12842). The packages provides a set of functions to set up a migratory connectivity matrix, and then use this matrix to calculate the maximum flow of birds/animal through the migratory network, and then prioritise sites for conservation.
@@ -83,7 +83,7 @@ This uses a reverse greedy approch to find sites which contribute least to popul
 prioritiseFLOW(rand_net$network, rand_net$sites)
 ```
 
-<img align="center" src="https://raw.githubusercontent.com/KiranLDA/migflow/master/pictures/network%20prioritisation.png">
+<img align="center" src="https://raw.githubusercontent.com/KiranLDA/migflow/master/pictures/network_prioritisation.png">
 
 
 ### This allows us to compare with networks, with for instance fewer edges
@@ -97,7 +97,7 @@ rand_net = randomNET(nsites=15,pop=pop, nedges=40)
 prioritiseFLOW(rand_net$network, rand_net$sites)
 ```
 
-<img align="center" src="https://raw.githubusercontent.com/KiranLDA/migflow/master/pictures/fewer%20edges.png">
+<img align="center" src="https://raw.githubusercontent.com/KiranLDA/migflow/master/pictures/fewer_edges.png">
 
 ### Describing networks using curve shape
 

@@ -9,9 +9,9 @@ License: file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.1
-Imports:
-    fields,
+Imports: fields,
+    igraph,
+    maptools,
     sp,
-    stats,
-    igraph
+    stats
 Depends: R (>= 2.10)

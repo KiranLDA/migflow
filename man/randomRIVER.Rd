@@ -10,6 +10,8 @@ randomRIVER(nsites = 50, pop = 1e+05, toplot = TRUE, nbreeding = 8,
 \arguments{
 \item{nsites}{number of sites to be generated in the network}
 
+\item{pop}{population size flowing through network}
+
 \item{toplot}{TRUE/FALSE to determine whether the output is plotted or not}
 
 \item{nbreeding}{number of breeding sites. If all branch ends should be breeding sites then use "ALL"}
@@ -27,8 +29,8 @@ This function generates a random migratory network
 }
 \examples{
 par(mfrow=c(1,1))
-randomRIVER(nsites = 20, toplot=T)
-randomRIVER(nsites = 50, toplot=T, nbreeding="ALL")
+randomRIVER(nsites = 20, toplot=TRUE)
+randomRIVER(nsites = 50, toplot=TRUE, nbreeding="ALL")
 
 
 }

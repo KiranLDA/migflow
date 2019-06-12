@@ -12,14 +12,14 @@
 #' @param Lonrange geographic range of species, by default longitude restricted to c(-10,10),
 #' @param Poprange min and max population sizes to be randomly generated, by default c(100,10000)
 #' @param toplot TRUE/FALSE to determine whether the output is plotted or not
+#' @param nbreeding Number of breeding sites
+#' @param nwintering Number of wintering sites
 #'
 #' @return a list containting the network which was randomly generated,
 #' the tracks that were randomly generated, and the sites that were randomly generated for animals to use.
 #'
-#' @examples
-#' randomNET()
-#'
 #' @import igraph
+#' @importFrom stats rnorm runif
 #' @export
 randomNET <- function(nsites=10,
                       nedges = "ALL",
