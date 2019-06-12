@@ -7,7 +7,7 @@
 randomNET(nsites = 10, nedges = "ALL", nbreeding = 3,
   nwintering = 4, pop = 1e+05, mean_dist = 2000, sd_dist = 1000,
   Latrange = c(-20, 40), Lonrange = c(-10, 10), Poprange = c(100,
-  10000), plot = TRUE)
+  10000), toplot = TRUE)
 }
 \arguments{
 \item{nsites}{number of sites to be generated in the network}
@@ -26,7 +26,7 @@ randomNET(nsites = 10, nedges = "ALL", nbreeding = 3,
 
 \item{Poprange}{min and max population sizes to be randomly generated, by default c(100,10000)}
 
-\item{plot}{TRUE/FALSE to determine whether the output is plotted or not}
+\item{toplot}{TRUE/FALSE to determine whether the output is plotted or not}
 }
 \value{
 a list containting the network which was randomly generated,

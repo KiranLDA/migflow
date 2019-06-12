@@ -33,6 +33,7 @@
 #' par(mfrow=c(1,1), mar=c(4,4,1,1))
 #' plot(x,y,type="o",pch=20, main = AUC)
 #'
+#' @importFrom base diff length sum abs round
 #' @export
 curvCALC <- function (x,y,digits=3){
   # library(ROCR)

@@ -49,7 +49,7 @@ Dist_P <- distPROB(tracks, dist, adjust=2, plot=TRUE)
 Pop_P <- nodePopPROP(dta, 300000)
 
 #Calculate the azimuth angle
-Azi_P <- absAZIMUTH(dist, lonlats=dta )
+Azi_P <- absAZIMUTH(dist, lonlats=dta)
 
 # make birds/animals prefer sites which a larger proportion of the population has been seen and where the distance is better
 network <- Dist_P * Pop_P * Azi_P
@@ -76,7 +76,7 @@ rand_net = randomNET(nsites=15,pop=pop)
 
 # Prioritising sites
 
-This uses a reverse greedy approch to find sites which contribute least to population flow, remove them, and reallocate population flow through the network based on remaining sites. This process is done iteratively until no sites are left.
+This uses a reverse greedy approch to find sites which contribute least to population flow, remove them, and reallocate population flow through the network based on the carrying capacity of remaining sites. This process is done iteratively until no sites are left.
 
 ```r
 # priotise sites according to flow through network
@@ -92,7 +92,7 @@ prioritiseFLOW(rand_net$network, rand_net$sites)
 # with fewer edges
 pop=100000
 rand_net = randomNET(nsites=15,pop=pop, nedges=40)
-'
+
 # priotise sites according to flow through network
 prioritiseFLOW(rand_net$network, rand_net$sites)
 ```
@@ -119,6 +119,8 @@ plot(x,y,type="o",pch=20,
       ylab = "proportion of population lost",
       main = paste0("Curve = ",AUC))
 ```
+
+
 <img align="center" src="https://raw.githubusercontent.com/KiranLDA/migflow/master/pictures/AUC.png">
 
 

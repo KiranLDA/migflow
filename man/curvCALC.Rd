@@ -33,14 +33,20 @@ the tracks that were randomly generated, and the sites that were randomly genera
 This function generates a random migratory network
 }
 \examples{
+
 pop=100000
-rand_net = randomNET(nsites=15,pop=pop)
+rand_net = randomNET(nsites=100,nbreeding=3, nwintering=3,pop=pop, mean_dist = 8000, sd_dist=9000, plot=F)
 
 # priotise sites according to flow through network
-prioritisation = prioritiseFLOW(rand_net$network, rand_net$sites)
+prioritisation = prioritiseFLOW(rand_net$network, rand_net$sites, plot=F)
 
-curvCALC(prioritisation$prioritisation$Pop_Flow/pop,
-         (1:length(prioritisation$prioritisation$Pop_Flow))/length(prioritisation$prioritisation$Pop_Flow))
+y=(prioritisation$prioritisation$Pop_Flow/pop)
+x=(1:length(prioritisation$prioritisation$Pop_Flow))/length(prioritisation$prioritisation$Pop_Flow)
 
+
+# calculate area under curve
+AUC = curvCALC(x,y)
+par(mfrow=c(1,1), mar=c(4,4,1,1))
+plot(x,y,type="o",pch=20, main = AUC)
 
 }

@@ -7,8 +7,9 @@
 #'
 #' @author Kiran Dhanjal-Adams \email{kiran.dhanjal.adams@gmail.com}
 #'
-#' @name maxflow
+#' @name migflow
 #' @import fields
 #' @import sp
 #' @import stats
+#' @import igraph
 NULL

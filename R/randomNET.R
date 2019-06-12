@@ -11,7 +11,7 @@
 #' @param Latrange geographic range of species, by default latitude restricted to c(-20,40),
 #' @param Lonrange geographic range of species, by default longitude restricted to c(-10,10),
 #' @param Poprange min and max population sizes to be randomly generated, by default c(100,10000)
-#' @param plot TRUE/FALSE to determine whether the output is plotted or not
+#' @param toplot TRUE/FALSE to determine whether the output is plotted or not
 #'
 #' @return a list containting the network which was randomly generated,
 #' the tracks that were randomly generated, and the sites that were randomly generated for animals to use.
@@ -31,7 +31,7 @@ randomNET <- function(nsites=10,
                       Latrange = c(-20,40),
                       Lonrange = c(-10,10),
                       Poprange = c(100,10000),
-                      plot = TRUE){
+                      toplot = TRUE){
 
   # generate random tracks
   tracks <- rnorm(100, mean_dist, sd_dist)
@@ -94,7 +94,7 @@ randomNET <- function(nsites=10,
     c(-21,0,pop,"supersink"))
 
   #created a weigted igraph network
-  if (plot == T){
+  if (toplot == T){
     weight <- graph_from_adjacency_matrix(network,  mode="directed", weighted = TRUE)
 
     # run the population through the network a forst time

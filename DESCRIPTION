@@ -1,6 +1,6 @@
 Package: migflow
 Type: Package
-Title: Calculates the maximum flow through a network using integel linear programming
+Title: Calculates the maximum flow through a network
 Version: 0.1.0
 Author: Kiran Dhanjal-Adams
 Maintainer: Kiran Dhanjal-Adams <kiran.dhanjaladams@uqconnect.edu.au>
@@ -14,3 +14,4 @@ Imports:
     sp,
     stats,
     igraph
+Depends: R (>= 2.10)
