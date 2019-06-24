@@ -5,7 +5,7 @@
 \title{Generate a random network}
 \usage{
 randomRIVER(nsites = 50, pop = 1e+05, toplot = TRUE, nbreeding = 8,
-  minforks = 2, maxforks = 5)
+  minforks = 2, maxforks = 5, anadromous = TRUE)
 }
 \arguments{
 \item{nsites}{number of sites to be generated in the network}
@@ -19,6 +19,8 @@ randomRIVER(nsites = 50, pop = 1e+05, toplot = TRUE, nbreeding = 8,
 \item{minforks}{minimum number of forks in a river branch}
 
 \item{maxforks}{maximum number of forks in a river branch}
+
+\item{anadromous}{TRUE or FALSE. If TRUE, then population breeds at the tips of network branches, otheriwe, it breeding "at sea"}
 }
 \value{
 a list containting the network which was randomly generated,
