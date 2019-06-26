@@ -461,7 +461,8 @@ randomLOOP <- function(pop = 100000,
     par(mar=c(4,4,4,4))
     index=2:(nrow(sites)-1)
     plot(sites$Lon[index], sites$Lat[index], pch=16,
-         cex=0)
+         cex=0, xlab="", ylab="", xaxt="n", yaxt = "n",
+         frame.plot=FALSE)
 
     index=1:nrow(nodes)#2:(nrow(nodes)-1)#
     # Arrows(x0 = nodes$Lon_from[index],
@@ -492,12 +493,13 @@ randomLOOP <- function(pop = 100000,
     # plot sites
     nodeflowplot = nodeflow[order(nodeflow$Category),]
     index=as.numeric(nodeflowplot$Category)+1
+    colorz = ifelse(sites$B[index]==1,"royalblue",ifelse(sites$NB[index]==1,"orange","gray"))
     points(sites$Lon[index],
            sites$Lat[index],
            pch=21,
            cex=(((nodeflowplot$x)/
                    as.numeric(max(nodeflowplot$x)))+0.4)*4,
-           bg="orange", col="black")
+           bg=colorz , col="black")
   }
 
   return(list( network = network,

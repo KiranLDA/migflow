@@ -17,44 +17,77 @@
 #' @import igraph
 #' @importFrom stats rnorm runif
 #' @export
-randomDIRECTED <- function(nbreeding = 3,
-                      nwintering = 4,
-                      nstop = 10,
-                      pop = 100000,
-                      mean_dist = 1000,
-                      sd_dist = 200,
-                      toplot = TRUE){
+randomDIFFUSE <- function(nbreeding = 10,
+                         nwintering = 10,
+                         nstop = 30,
+                         pop = 100000,
+                         mean_dist = 0,
+                         sd_dist = 500,
+                         toplot = TRUE){
 
-  # # For testing purposes
-  # nbreeding = 3
-  # nwintering = 3
-  # nstop = 10
+  # # # For testing purposes
+  # nbreeding = 10
+  # nwintering = 10
+  # nstop = 30
   # pop = 100000
-  # toplot= TRUE
-  # # minforks = 2
-  # # maxforks = 5
-  # # mean_dist = 0
-  # # sd_dist = 2000
-
+  # mean_dist = 0
+  # sd_dist = 800
+  # toplot = TRUE
 
 
   nsites = nbreeding+nwintering+nstop
 
 
   # generate random tracks
-  tracks <- abs(rnorm(1000, mean_dist, sd_dist))
+  tracks <- abs(rnorm(1000, mean_dist, sd_dist)) # rgamma(1000,2.3,0.005)#
+  # hist(tracks)
+
+  # # Create a fake list of sites where animals were seen at, with latitude, longitude and number of anumals seen there
+  # site_list <- data.frame(Lat= runif(nsites, min=-20, max=40),
+  #                         Lon= runif(nsites, min=-20, max=20),
+  #                         Pop=runif(nsites, min=500, max=10000),
+  #                         B= 0,
+  #                         SM=0,
+  #                         NM=0,
+  #                         NB=0)
+
+  B <- data.frame(Lat = runif(nbreeding, min=30, max=40),
+                  Lon= runif(nbreeding, min=-20, max=20),
+                  Pop=runif(nbreeding, min=500, max=10000),
+                  B = 1,
+                  SM = 0,
+                  NB = 0,
+                  NM = 0)
 
 
-  # Create a fake list of sites where animals were seen at, with latitude, longitude and number of anumals seen there
-  site_list <- data.frame(Lat= runif(nsites, min=-20, max=40),
-                          Lon= runif(nsites, min=-5, max=5),
-                          Pop=runif(nsites, min=500, max=10000),
-                          B= 0,
-                          SM=0,
-                          NM=0,
-                          NB=0)
+  NB <- data.frame(Lat = runif(nwintering, min=-20, max=-10),
+                   Lon= runif(nwintering, min=-20, max=20),
+                   Pop=runif(nwintering, min=500, max=10000),
+                   B = 0,
+                   SM = 0,
+                   NB = 1,
+                   NM = 0)
 
-  #sort according to latitude
+  STP <- data.frame(Lat = runif(nstop, min=-10, max=30),
+                    Lon= runif(nstop, min=-20, max=20),
+                    Pop=runif(nstop, min=500, max=10000),
+                    B = 0,
+                    SM = 1,
+                    NB = 0,
+                    NM = 1)
+
+  sites = rbind(B, STP, NB)
+  sites = sites[order(sites$Lat, decreasing=T),]
+  sites$Site= 1:nsites
+  site_list = sites
+
+
+  #Add a bottleneck site
+  # bottleneck <- round(runif(1, 1, nstop))
+  # site_list$Pop[site_list$SM==1][bottleneck] <- pop
+
+
+  # sort according to latitude
   site_list = site_list[order(site_list$Lat, decreasing=T),]
   site_list$Site= 1:nsites
 
@@ -87,21 +120,26 @@ randomDIRECTED <- function(nbreeding = 3,
   Pop_P <- nodePopPROP(sites, population = pop)
 
   #Calculate the azimuth angle
-  Azi_P <- absAZIMUTH(dist, lonlats=sites )+0.01
+  Azi_P <- absAZIMUTH(dist, lonlats=sites )#+0.01
 
   # make birds/animals prefer sites which a larger prioritisation of the population has been seen and where the distance is better
-  network <- Dist_P * Pop_P * Azi_P
+  network <-  Azi_P  * Pop_P * Dist_P
+  Dist_P <- (max(dist)-dist) / max(dist)
+
+  network[, which(sites$SM == 1 & sites$Pop == pop)] <- Azi_P[, which(sites$SM == 1 & sites$Pop == pop)]*Pop_P[, which(sites$SM == 1 & sites$Pop == pop)]*Dist_P[, which(sites$SM == 1 & sites$Pop == pop)]
+  network[which(sites$SM == 1 & sites$Pop == pop), ] <- Azi_P[which(sites$SM == 1 & sites$Pop == pop), ]*Pop_P[which(sites$SM == 1 & sites$Pop == pop), ]*Dist_P[which(sites$SM == 1 & sites$Pop == pop), ]
+
 
   # Make the network directed
   network <- directedNET(network, include_diagonal = TRUE)
-
-  # Ensure that nodes only flow into the next 1 or two neighbouring nodes
-  for (i in 1:nrow(network)){
-    idx = (i+1) : (i+1 + ceiling(runif(1,0,2))-1)
-    idx = which(!(1:nrow(network) %in% idx))
-    network[i, idx] = 0
-  }
-
+  #
+  # # Ensure that nodes only flow into the next 1 or two neighbouring nodes
+  # for (i in 1:nrow(network)){
+  #   idx = (i+1) : (i+1 + ceiling(runif(1,0,2))-1)
+  #   idx = which(!(1:nrow(network) %in% idx))
+  #   network[i, idx] = 0
+  # }
+  #
   SMnet <- t(apply(network,1,
                    function(x) x[which(!is.na(x))]/
                      sum(x,na.rm=TRUE)))
@@ -124,20 +162,23 @@ randomDIRECTED <- function(nbreeding = 3,
   Pop_P <- nodePopPROP(sites, population = pop)
 
   #Calculate the azimuth angle
-  Azi_P <- absAZIMUTH(dist, lonlats=sites )+0.01
+  Azi_P <- absAZIMUTH(dist, lonlats=sites )#+0.01
 
   # make birds/animals prefer sites which a larger prioritisation of the population has been seen and where the distance is better
-  network <- Dist_P * Pop_P * Azi_P
+  network <-  Azi_P  *Pop_P * Dist_P
 
   # Make the network directed
   network <- directedNET(network, include_diagonal = TRUE)
+  Dist_P <- (max(dist)-dist) / max(dist)
+  network[, which(sites$SM == 1 & sites$Pop == pop)] <- Azi_P[, which(sites$SM == 1 & sites$Pop == pop)]*Pop_P[, which(sites$SM == 1 & sites$Pop == pop)] * Dist_P[, which(sites$SM == 1 & sites$Pop == pop)]
+  network[which(sites$SM == 1 & sites$Pop == pop), ] <- Azi_P[which(sites$SM == 1 & sites$Pop == pop), ]*Pop_P[which(sites$SM == 1 & sites$Pop == pop), ]*Dist_P[which(sites$SM == 1 & sites$Pop == pop), ]
 
   # Ensure that nodes only flow into the next 1 or two neighbouring nodes
-  for (i in 1:nrow(network)){
-    idx = (i+1) : (i+1 + ceiling(runif(1,0,2))-1)
-    idx = which(!(1:nrow(network) %in% idx))
-    network[i, idx] = 0
-  }
+  # for (i in 1:nrow(network)){
+  #   idx = (i+1) : (i+1 + ceiling(runif(1,0,2))-1)
+  #   idx = which(!(1:nrow(network) %in% idx))
+  #   network[i, idx] = 0
+  # }
 
   NMnet <- t(apply(network,1,
                    function(x) x[which(!is.na(x))]/
@@ -155,9 +196,9 @@ randomDIRECTED <- function(nbreeding = 3,
                         sinks = site_list$Site[site_list$NB ==1])
 
   index = as.numeric(names(which(SMnet["supersource",] == Inf)))
-  SMnet["supersource",which(SMnet["supersource",] == Inf)] = site_list$Pop[index]/sum(site_list$Pop[index])
+  SMnet["supersource",which(SMnet["supersource",] == Inf)] = site_list$Pop[index]/sum(site_list$Pop[index]) #pop / nbreeding#
   index = as.numeric(names(which(SMnet[,"supersink"] == Inf)))
-  SMnet[which(SMnet[,"supersink"] == Inf), "supersink"] = site_list$Pop[index]/sum(site_list$Pop[index])
+  SMnet[which(SMnet[,"supersink"] == Inf), "supersink"] = site_list$Pop[index]/sum(site_list$Pop[index]) # pop / nwintering#
 
   #North
   NMnet <- addSUPERNODE(NMnet,
@@ -165,9 +206,9 @@ randomDIRECTED <- function(nbreeding = 3,
                         sinks = site_list$Site[site_list$B ==1])
 
   index = as.numeric(names(which(NMnet["supersource",] == Inf)))
-  NMnet["supersource",which(NMnet["supersource",] == Inf)] = site_list$Pop[index]/sum(site_list$Pop[index])
+  NMnet["supersource",which(NMnet["supersource",] == Inf)] = site_list$Pop[index]/sum(site_list$Pop[index]) #pop / nwintering#
   index = as.numeric(names(which(NMnet[,"supersink"] == Inf)))
-  NMnet[which(NMnet[,"supersink"] == Inf), "supersink"] = site_list$Pop[index]/sum(site_list$Pop[index])
+  NMnet[which(NMnet[,"supersink"] == Inf), "supersink"] = site_list$Pop[index]/sum(site_list$Pop[index]) #pop / nbreeding#
 
 
 
@@ -278,6 +319,7 @@ randomDIRECTED <- function(nbreeding = 3,
 
     # make sure it is numeric
     nodeflow$Category = as.numeric(as.character(nodeflow$Category))
+
 
     # plot sites
     nodeflowplot = nodeflow[order(nodeflow$Category),]

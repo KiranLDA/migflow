@@ -2,8 +2,9 @@
 #'
 #' @description This function generates a random migratory network
 #'
-#' @param nsites number of sites to be generated in the network
-#' @param nbreeding number of breeding sites. If all branch ends should be breeding sites then use "ALL"
+#' @param nbreeding number of breeding sites.
+#' @param nwintering number of nonbreeding residency/wintering sites.
+#' @param nstop number of sites used duting migratory stopover
 #' @param toplot TRUE/FALSE to determine whether the output is plotted or not
 #' @param pop population size flowing through network
 #' @param minforks minimum number of forks in a river branch
@@ -15,17 +16,18 @@
 #'
 #' @examples
 #' par(mfrow=c(1,1))
-#' randomRIVER(nsites = 20, toplot=TRUE)
-#' randomRIVER(nsites = 50, toplot=TRUE, nbreeding="ALL")
+#' randomRIVER(nbreeding = 6, toplot=TRUE)
+#'
 #'
 #'
 #' @import igraph
 #' @importFrom stats runif
 #' @export
-randomRIVER <- function(nsites = 50,
+randomRIVER <- function(nwintering=4,
+                        nbreeding=10,
+                        nstop = 40,
                         pop = 100000,
                         toplot= TRUE,
-                        nbreeding = 8,
                         minforks = 2,
                         maxforks = 5,
                         anadromous = TRUE){
@@ -37,6 +39,8 @@ randomRIVER <- function(nsites = 50,
   # minforks = 2
   # maxforks = 5
   # anadromous = TRUE
+
+  nsites <- nwintering + nbreeding + nstop
 
   # Create a fake list of sites where animals were seen at, with latitude, longitude and number of anumals seen there
   site_list <- data.frame(Lat= runif(nsites, min=-20, max=40),
@@ -115,9 +119,20 @@ randomRIVER <- function(nsites = 50,
 
   #specify the sinks
   sinks = which(apply(network,1, function(x) sum(which(x>0)))==0)
-  if(nbreeding != "ALL") sinks = sinks[which(sort(dist[sinks,"supersink"],index.return = TRUE)$ix <= nbreeding)]
+  if (anadromous==TRUE){
+    # if(nbreeding != "ALL")
+      sinks = sinks[which(sort(dist[sinks,"supersink"],index.return = TRUE)$ix <= nbreeding)]
+    site_list$B <- 0
+    site_list$B[sinks+1] <- 1
+  } else{
+    # if(nwintering != "ALL")
+      sinks = sinks[which(sort(dist[sinks,"supersink"],index.return = TRUE)$ix <= nwintering)]
+    site_list$NB <- 0
+    site_list$NB[sinks+1] <- 1
+  }
 
-  #Add supersource and sink nodes
+
+  # Add supersource and sink nodes
   network <- addSUPERNODE(network, sources= site_list$Site[2],
                           sinks = sinks)
 
@@ -147,22 +162,43 @@ randomRIVER <- function(nsites = 50,
   network <- as.matrix(as_adjacency_matrix(neti, attr="weight"))
   # neti[neti== "."] <- flow$flow
 
-  if (toplot == TRUE){
-    weight <- delete.vertices(weight, c(1, length(V(weight))))
-    index = which(nodes$V1 != "supersource" & nodes$V2 != "supersink")
-    nodeindex = which(nodes$V1 != "supersource")
-    nodes[nodeindex,]
-    sizes <- unlist(lapply(1:nsites ,function(x) sum(nodes$flow[nodeindex][nodes$V1[nodeindex]==x])))
 
-    Bcols = c("black",ifelse(network[3:(nsites+1),"supersink"] > 0, "orange", "royalblue4"))
-    lyt = layout_with_kk(weight)
+  weight <- delete.vertices(weight, c(1, length(V(weight))))
+  index = which(nodes$V1 != "supersource" & nodes$V2 != "supersink")
+  nodeindex = which(nodes$V1 != "supersource")
+  nodes[nodeindex,]
 
-    plot(weight, layout= lyt, edge.width = ((flow$flow[index]/pop)*20), edge.arrow.mode=0,
-         edge.color = "royalblue4",
-         vertex.color =  Bcols,
-         vertex.label="",
-         vertex.size = ((sizes/pop)*20)+5)
+
+  sizes <- apply(network,1,sum)
+
+  if (anadromous==TRUE){
+    index = as.numeric(names(sort(sizes[2:(length(sizes)-1)], decreasing =TRUE)))[1:nwintering]
+    site_list$NB <- 0
+    site_list$NB[index+1] <- 1
+  } else{
+    index = as.numeric(names(sort(sizes[2:(length(sizes)-1)], decreasing =TRUE)))[1:nbreeding]
+    site_list$B <- 0
+    site_list$B[index+1] <- 1
   }
+
+  sizes <- unlist(lapply(1:nsites ,function(x) sum(nodes$flow[nodeindex][nodes$V1[nodeindex]==x])))
+
+
+
+  site_list$NM <- site_list$SM <- 0
+  site_list$NM[site_list$B == 0 & site_list$NB == 0] <- 1
+  site_list$SM[site_list$B == 0 & site_list$NB == 0] <- 1
+
+  # Bcols = c("black",ifelse(network[3:(nsites+1),"supersink"] > 0, "orange", "royalblue4"))
+  lyt = layout_with_kk(weight)
+
+  # if (toplot == TRUE){
+  #     plot(weight, layout= lyt, edge.width = ((flow$flow[index]/pop)*20), edge.arrow.mode=0,
+  #          edge.color = "royalblue4",
+  #          vertex.color =  Bcols,
+  #          vertex.label="",
+  #          vertex.size = ((sizes/pop)*20)+5)
+  #   }
 
   site_list$Pop <- c(pop,sizes, pop)
   site_list$Lon[2:(nrow(site_list)-1)] <- lyt[,1]
@@ -211,6 +247,77 @@ randomRIVER <- function(nsites = 50,
 
   network["Ssupersink","NB"]<- pop
   network["NB","Nsupersink"]<- pop
+
+
+  weight <- graph_from_adjacency_matrix(network,  mode="directed", weighted = TRUE)
+
+  # run the population through the network a forst time
+  flow = max_flow(weight, source = V(weight)["Ssupersource"],
+                  target = V(weight)["Nsupersource"], capacity = E(weight)$weight)
+
+  sites <-site_list
+  if (toplot == TRUE){
+    # plot flow network
+    nodes = get.edgelist(weight, names=TRUE)
+    nodes = as.data.frame(nodes)
+    nodes$flow = flow$flow
+    nodes$V1 <- substring(nodes$V1, 2)
+    nodes$V2 <- substring(nodes$V2, 2)
+
+    nodes = nodes[nodes$V1 != "supersource" & nodes$V1 != "supersink" & nodes$V2 != "supersource" & nodes$V2 != "supersink" ,]
+
+    nodes$Lat_from = unlist(lapply(1:nrow(nodes), function(i) as.numeric(sites$Lat[sites$Site %in% nodes[i,1]])))
+    nodes$Lon_from = unlist(lapply(1:nrow(nodes), function(i) as.numeric(sites$Lon[sites$Site %in% nodes[i,1]])))
+    nodes$Lat_to   = unlist(lapply(1:nrow(nodes), function(i) as.numeric(sites$Lat[sites$Site %in% nodes[i,2]])))
+    nodes$Lon_to   = unlist(lapply(1:nrow(nodes), function(i) as.numeric(sites$Lon[sites$Site %in% nodes[i,2]])))
+
+
+    # library(shape)
+    # par(mfrow=c(1,1))
+    # par(mar=c(4,4,4,4))
+    index=2:(nrow(sites)-1)
+    if(toplot ==TRUE){
+    plot(sites$Lon[index], sites$Lat[index], pch=16,
+         cex=0, xlab="", ylab="", xaxt="n", yaxt = "n",
+         frame.plot=FALSE)
+      }
+
+    index=1:nrow(nodes)
+    segments(x0 = nodes$Lon_from[index],
+             y0 = nodes$Lat_from[index],
+             x1 = nodes$Lon_to[index],
+             y1 = nodes$Lat_to[index],
+             col= "black",
+             lwd=(nodes$flow[index]/(max(nodes$flow)))*30)
+
+
+    # sort sites by flow
+    nodeflow = merge(aggregate(nodes$flow, by=list(Category=as.character(nodes$V1)), FUN=sum),
+                     aggregate(nodes$flow, by=list(Category=as.character(nodes$V2)), FUN=sum), all=T)
+    nodeflow$x = as.numeric(nodeflow$x)
+    nodeflow = data.frame( unique(as.matrix(nodeflow[ , 1:2 ]) ))
+    nodeflow$x = as.numeric(as.character(nodeflow$x))
+    nodeflow = nodeflow[nodeflow$Category != "supersource" & nodeflow$Category != "supersink",]
+
+    # make sure it is numeric
+    nodeflow$Category = as.numeric(as.character(nodeflow$Category))
+
+    # plot sites
+    nodeflowplot = nodeflow[order(nodeflow$Category),]
+    nodeflowplot$x[1] <-nodeflowplot$x[1]+nodeflowplot$x[1]
+    # nodeflowplot = nodeflow[order(nodeflow$Category),]
+    index=as.numeric(nodeflowplot$Category)+1
+    colorz = ifelse(sites$B[index]==1,"royalblue",ifelse(sites$NB[index]==1,"orange","gray"))
+
+    if(toplot ==TRUE){
+    points(sites$Lon[index],
+           sites$Lat[index],
+           pch=21,
+           cex=(((nodeflowplot$x)/
+                   as.numeric(max(nodeflowplot$x)))+0.4)*4,
+           bg=colorz , col="black")
+    }
+  }
 
   return(list( network = network,
                # tracks = tracks,

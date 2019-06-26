@@ -81,14 +81,6 @@ randomPARALLEL <- function(nbreeding = 10,
   sites$Site= 1:nsites
   site_list = sites
 
-
-
-
-
-
-
-
-
   #sort according to latitude
   site_list = site_list[order(site_list$Lat, decreasing=T),]
   site_list$Site= 1:nsites
@@ -122,7 +114,7 @@ randomPARALLEL <- function(nbreeding = 10,
   Pop_P <- nodePopPROP(sites, population = pop)
 
   #Calculate the azimuth angle
-  Azi_P <- absAZIMUTH(dist, lonlats=sites )+0.01
+  Azi_P <- absAZIMUTH(dist, lonlats=sites )#+0.01
 
   # make birds/animals prefer sites which a larger prioritisation of the population has been seen and where the distance is better
   network <-  Azi_P * Dist_P #*Pop_P
@@ -159,7 +151,7 @@ randomPARALLEL <- function(nbreeding = 10,
   Pop_P <- nodePopPROP(sites, population = pop)
 
   #Calculate the azimuth angle
-  Azi_P <- absAZIMUTH(dist, lonlats=sites )+0.01
+  Azi_P <- absAZIMUTH(dist, lonlats=sites )#+0.01
 
   # make birds/animals prefer sites which a larger prioritisation of the population has been seen and where the distance is better
   network <-  Azi_P * Dist_P #*Pop_P
@@ -285,7 +277,8 @@ randomPARALLEL <- function(nbreeding = 10,
     par(mar=c(4,4,4,4))
     index=2:(nrow(sites)-1)
     plot(sites$Lon[index], sites$Lat[index], pch=16,
-         cex=0)
+         cex=0, xlab="", ylab="", xaxt="n", yaxt = "n",
+         frame.plot=FALSE)
 
     index=1:nrow(nodes)#2:(nrow(nodes)-1)#
     # Arrows(x0 = nodes$Lon_from[index],
@@ -316,12 +309,13 @@ randomPARALLEL <- function(nbreeding = 10,
     # plot sites
     nodeflowplot = nodeflow[order(nodeflow$Category),]
     index=as.numeric(nodeflowplot$Category)+1
+    colorz = ifelse(sites$B[index]==1,"royalblue",ifelse(sites$NB[index]==1,"orange","gray"))
     points(sites$Lon[index],
            sites$Lat[index],
            pch=21,
            cex=(((nodeflowplot$x)/
                    as.numeric(max(nodeflowplot$x)))+0.4)*4,
-           bg="orange", col="black")
+           bg=colorz , col="black")
   }
 
   return(list( network = network,
