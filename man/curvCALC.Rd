@@ -27,7 +27,7 @@ rand_net = randomNET(nsites=100,nbreeding=3, nwintering=3,pop=pop,
                      mean_dist = 8000, sd_dist=9000, toplot=FALSE)
 
 # priotise sites according to flow through network
-prioritisation = prioritiseFLOW(rand_net$network, rand_net$sites, toplot=FALSE)
+prioritisation = prioritiseFLOW(rand_net$network, rand_net$sites, toplot=FALSE, returnNET = FALSE)
 
 y=(prioritisation$prioritisation$Pop_Flow/pop)
 x=((1:length(prioritisation$prioritisation$Pop_Flow))/

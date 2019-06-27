@@ -4,19 +4,19 @@
 \alias{prioritiseFLOW}
 \title{Prioritise sites according to population flow}
 \usage{
-prioritiseFLOW(network, sites, method = "igraph", toplot = TRUE,
-  pop = 1e+05)
+prioritiseFLOW(network, sites, toplot = TRUE, pop = 1e+05,
+  returnNET = TRUE)
 }
 \arguments{
 \item{network}{adjacency network describing where birds are going}
 
 \item{sites}{network sites including latitude and longitude, and population count at each site}
 
-\item{method}{max_flow method, currently that of igraph, but will also support gurobi or lpsolve}
-
 \item{toplot}{TRUE/FALSE to determine whether the output is plotted or not}
 
 \item{pop}{number of individuals in the population}
+
+\item{returnNET}{TRUE/FALSE whether or not the network is a return network or not}
 }
 \value{
 a list containting the prioritisation (as a list of the sites in the order they are removed), the network which was randomly generated,
@@ -30,13 +30,21 @@ pop=100000
 rand_net = randomNET(nsites=15,pop=pop)
 
 # priotise sites according to flow through network
-prioritiseFLOW(rand_net$network, rand_net$sites)
+prioritiseFLOW(rand_net$network, rand_net$sites, returnNET=FALSE)
 
-# with fewer edges
-pop=100000
-rand_net = randomNET(nsites=15,pop=pop, nedges=40)
+# with a return network
+net <- randomSTAR(nwintering=40, nbreeding=5,anadromous=FALSE)
+network <- shortenNET(net$network, from = "Ssupersink", to = "Nsupersink")
+
+
+colnames(network)[1]<- rownames(network)[1] <- "Ssupersource"
+colnames(network)[length(colnames(network))] <-  "Nsupersink"
+rownames(network)[length(rownames(network))] <- "Nsupersink"
+sites <- net$sites
+
 
 # priotise sites according to flow through network
-prioritiseFLOW(rand_net$network, rand_net$sites)
+prioritiseFLOW(network, sites, toplot=TRUE, returnNET=TRUE)
+
 
 }

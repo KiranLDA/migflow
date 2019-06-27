@@ -11,6 +11,7 @@ LazyData: true
 RoxygenNote: 6.1.1
 Imports: fields,
     igraph,
+    grDevices,
     maptools,
     sp,
     stats

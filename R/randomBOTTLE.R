@@ -42,15 +42,6 @@ randomBOTTLE <- function(nbreeding = 10,
   tracks <- abs(rnorm(1000, mean_dist, sd_dist)) # rgamma(1000,2.3,0.005)#
   # hist(tracks)
 
-  # # Create a fake list of sites where animals were seen at, with latitude, longitude and number of anumals seen there
-  # site_list <- data.frame(Lat= runif(nsites, min=-20, max=40),
-  #                         Lon= runif(nsites, min=-20, max=20),
-  #                         Pop=runif(nsites, min=500, max=10000),
-  #                         B= 0,
-  #                         SM=0,
-  #                         NM=0,
-  #                         NB=0)
-
   B <- data.frame(Lat = runif(nbreeding, min=30, max=40),
                   Lon= runif(nbreeding, min=-20, max=20),
                   Pop=runif(nbreeding, min=500, max=10000),
@@ -96,12 +87,6 @@ randomBOTTLE <- function(nbreeding = 10,
   site_list$SM[site_list$B==0 & site_list$NB==0] = 1
   site_list$NM = site_list$SM
 
-  # # add a dummy breeding and wintering site
-  # site_list<- rbind(
-  #   c(41,0,pop,0,0,0,0,0),
-  #   site_list,
-  #   c(-21,0,pop,0,0,0,0,9999))
-
 
   #-----------------------------
   #  South migration B -> NB
@@ -109,37 +94,44 @@ randomBOTTLE <- function(nbreeding = 10,
 
 
   sites = site_list
+
+  # different!
+  bottleneck_site <- site_list$Site[site_list$SM==1][bottleneck]
+  bottleneck_idx <- which(sites$Site == bottleneck_site)
+
   # create a distance matrix based on these data
   dist <- point2DIST(sites)
 
   # calculate the probability of going between these sites given the distance the animal can travel
   Dist_P <- distPROB(tracks, dist, adjust=1, plot=F)
-  # Dist_P <- (max(dist)-dist) / max(dist)
+  # different!
+  Dist_P[,bottleneck_idx] <- (max(dist)-dist[,bottleneck_idx]) / max(dist)
+  Dist_P[bottleneck_idx,] <- (max(dist)-dist[bottleneck_idx,]) / max(dist)
 
   # Calculate prioritisation of population using a site
   Pop_P <- nodePopPROP(sites, population = pop)
+  # different!
+  Pop_P[,bottleneck_idx] <- 1
+  Pop_P[bottleneck_idx,] <- 1
 
   #Calculate the azimuth angle
-  Azi_P <- absAZIMUTH(dist, lonlats=sites )+0.01
+  Azi_P <- absAZIMUTH(dist, lonlats=sites )#+0.01
+  # different!
+  # Azi_P[,bottleneck_idx] <- 1
+  # Azi_P[bottleneck_idx,] <- 1
 
   # make birds/animals prefer sites which a larger prioritisation of the population has been seen and where the distance is better
   network <-  Azi_P  * Pop_P * Dist_P
-  Dist_P <- (max(dist)-dist) / max(dist)
 
-  network[, which(sites$SM == 1 & sites$Pop == pop)] <- Azi_P[, which(sites$SM == 1 & sites$Pop == pop)]*Pop_P[, which(sites$SM == 1 & sites$Pop == pop)]*Dist_P[, which(sites$SM == 1 & sites$Pop == pop)]
-  network[which(sites$SM == 1 & sites$Pop == pop), ] <- Azi_P[which(sites$SM == 1 & sites$Pop == pop), ]*Pop_P[which(sites$SM == 1 & sites$Pop == pop), ]*Dist_P[which(sites$SM == 1 & sites$Pop == pop), ]
+  # different!
+  # Dist_P <- (max(dist)-dist) / max(dist)
+  # network[, which(sites$SM == 1 & sites$Pop == pop)] <- Azi_P[, which(sites$SM == 1 & sites$Pop == pop)]*Pop_P[, which(sites$SM == 1 & sites$Pop == pop)]*Dist_P[, which(sites$SM == 1 & sites$Pop == pop)]
+  # network[which(sites$SM == 1 & sites$Pop == pop), ] <- Azi_P[which(sites$SM == 1 & sites$Pop == pop), ]*Pop_P[which(sites$SM == 1 & sites$Pop == pop), ]*Dist_P[which(sites$SM == 1 & sites$Pop == pop), ]
 
 
   # Make the network directed
   network <- directedNET(network, include_diagonal = TRUE)
-  #
-  # # Ensure that nodes only flow into the next 1 or two neighbouring nodes
-  # for (i in 1:nrow(network)){
-  #   idx = (i+1) : (i+1 + ceiling(runif(1,0,2))-1)
-  #   idx = which(!(1:nrow(network) %in% idx))
-  #   network[i, idx] = 0
-  # }
-  #
+
   SMnet <- t(apply(network,1,
                    function(x) x[which(!is.na(x))]/
                      sum(x,na.rm=TRUE)))
@@ -152,33 +144,40 @@ randomBOTTLE <- function(nbreeding = 10,
 
   sites = site_list[order(site_list$Lat, decreasing=FALSE),]
 
+  # different!
+  bottleneck_idx <- which(sites$Site == bottleneck_site)
+
   # create a distance matrix based on these data
   dist <- point2DIST(sites)
 
   # calculate the probability of going between these sites given the distance the animal can travel
   Dist_P <- distPROB(tracks, dist, adjust=1, plot=F)
+  # different!
+  Dist_P[,bottleneck_idx] <- (max(dist)-dist[,bottleneck_idx]) / max(dist)
+  Dist_P[bottleneck_idx,] <- (max(dist)-dist[bottleneck_idx,]) / max(dist)
 
   # Calculate prioritisation of population using a site
   Pop_P <- nodePopPROP(sites, population = pop)
+  # different!
+  Pop_P[,bottleneck_idx] <- 1
+  Pop_P[bottleneck_idx,] <- 1
 
   #Calculate the azimuth angle
-  Azi_P <- absAZIMUTH(dist, lonlats=sites )+0.01
+  Azi_P <- absAZIMUTH(dist, lonlats=sites )#+0.01
+  # # different!
+  # Azi_P[,bottleneck_idx] <- 1
+  # Azi_P[bottleneck_idx,] <- 1
 
   # make birds/animals prefer sites which a larger prioritisation of the population has been seen and where the distance is better
   network <-  Azi_P  *Pop_P * Dist_P
 
   # Make the network directed
   network <- directedNET(network, include_diagonal = TRUE)
-  Dist_P <- (max(dist)-dist) / max(dist)
-  network[, which(sites$SM == 1 & sites$Pop == pop)] <- Azi_P[, which(sites$SM == 1 & sites$Pop == pop)]*Pop_P[, which(sites$SM == 1 & sites$Pop == pop)] * Dist_P[, which(sites$SM == 1 & sites$Pop == pop)]
-  network[which(sites$SM == 1 & sites$Pop == pop), ] <- Azi_P[which(sites$SM == 1 & sites$Pop == pop), ]*Pop_P[which(sites$SM == 1 & sites$Pop == pop), ]*Dist_P[which(sites$SM == 1 & sites$Pop == pop), ]
 
-  # Ensure that nodes only flow into the next 1 or two neighbouring nodes
-  # for (i in 1:nrow(network)){
-  #   idx = (i+1) : (i+1 + ceiling(runif(1,0,2))-1)
-  #   idx = which(!(1:nrow(network) %in% idx))
-  #   network[i, idx] = 0
-  # }
+  # different!
+  # Dist_P <- (max(dist)-dist) / max(dist)
+  # network[, which(sites$SM == 1 & sites$Pop == pop)] <- Azi_P[, which(sites$SM == 1 & sites$Pop == pop)]*Pop_P[, which(sites$SM == 1 & sites$Pop == pop)] * Dist_P[, which(sites$SM == 1 & sites$Pop == pop)]
+  # network[which(sites$SM == 1 & sites$Pop == pop), ] <- Azi_P[which(sites$SM == 1 & sites$Pop == pop), ]*Pop_P[which(sites$SM == 1 & sites$Pop == pop), ]*Dist_P[which(sites$SM == 1 & sites$Pop == pop), ]
 
   NMnet <- t(apply(network,1,
                    function(x) x[which(!is.na(x))]/
@@ -295,12 +294,6 @@ randomBOTTLE <- function(nbreeding = 10,
          frame.plot=FALSE)
 
     index=1:nrow(nodes)#2:(nrow(nodes)-1)#
-    # Arrows(x0 = nodes$Lon_from[index],
-    #        y0 = nodes$Lat_from[index],
-    #        x1 = nodes$Lon_to[index],
-    #        y1 = nodes$Lat_to[index],
-    #        col= adjustcolor("royalblue3", alpha.f =  0.9))#,
-    #        # lwd=(nodes$flow[index]/(max(nodes$flow)))*30)#,#/500
     segments(x0 = nodes$Lon_from[index],
              y0 = nodes$Lat_from[index],
              x1 = nodes$Lon_to[index],

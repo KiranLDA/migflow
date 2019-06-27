@@ -41,16 +41,6 @@ randomPARALLEL <- function(nbreeding = 10,
   # generate random tracks
   tracks <- abs(rnorm(1000, mean_dist, sd_dist))
 
-
-  # # Create a fake list of sites where animals were seen at, with latitude, longitude and number of anumals seen there
-  # site_list <- data.frame(Lat= runif(nsites, min=-20, max=40),
-  #                         Lon= runif(nsites, min=-20, max=20),
-  #                         Pop=runif(nsites, min=500, max=10000),
-  #                         B= 0,
-  #                         SM=0,
-  #                         NM=0,
-  #                         NB=0)
-
   B <- data.frame(Lat = runif(nbreeding, min=30, max=40),
                   Lon= runif(nbreeding, min=-20, max=20),
                   Pop=runif(nbreeding, min=500, max=10000),
@@ -90,12 +80,6 @@ randomPARALLEL <- function(nbreeding = 10,
   site_list$SM[site_list$B==0 & site_list$NB==0] = 1
   site_list$NM = site_list$SM
 
-  # # add a dummy breeding and wintering site
-  # site_list<- rbind(
-  #   c(41,0,pop,0,0,0,0,0),
-  #   site_list,
-  #   c(-21,0,pop,0,0,0,0,9999))
-
 
   #-----------------------------
   #  South migration B -> NB
@@ -121,14 +105,7 @@ randomPARALLEL <- function(nbreeding = 10,
 
   # Make the network directed
   network <- directedNET(network, include_diagonal = TRUE)
-  #
-  # # Ensure that nodes only flow into the next 1 or two neighbouring nodes
-  # for (i in 1:nrow(network)){
-  #   idx = (i+1) : (i+1 + ceiling(runif(1,0,2))-1)
-  #   idx = which(!(1:nrow(network) %in% idx))
-  #   network[i, idx] = 0
-  # }
-  #
+
   SMnet <- t(apply(network,1,
                    function(x) x[which(!is.na(x))]/
                      sum(x,na.rm=TRUE)))
@@ -159,12 +136,7 @@ randomPARALLEL <- function(nbreeding = 10,
   # Make the network directed
   network <- directedNET(network, include_diagonal = TRUE)
 
-  # Ensure that nodes only flow into the next 1 or two neighbouring nodes
-  # for (i in 1:nrow(network)){
-  #   idx = (i+1) : (i+1 + ceiling(runif(1,0,2))-1)
-  #   idx = which(!(1:nrow(network) %in% idx))
-  #   network[i, idx] = 0
-  # }
+
 
   NMnet <- t(apply(network,1,
                    function(x) x[which(!is.na(x))]/
@@ -281,12 +253,6 @@ randomPARALLEL <- function(nbreeding = 10,
          frame.plot=FALSE)
 
     index=1:nrow(nodes)#2:(nrow(nodes)-1)#
-    # Arrows(x0 = nodes$Lon_from[index],
-    #        y0 = nodes$Lat_from[index],
-    #        x1 = nodes$Lon_to[index],
-    #        y1 = nodes$Lat_to[index],
-    #        col= adjustcolor("royalblue3", alpha.f =  0.9))#,
-    #        # lwd=(nodes$flow[index]/(max(nodes$flow)))*30)#,#/500
     segments(x0 = nodes$Lon_from[index],
              y0 = nodes$Lat_from[index],
              x1 = nodes$Lon_to[index],

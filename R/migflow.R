@@ -12,6 +12,7 @@
 #' @import sp
 #' @import igraph
 #' @importFrom graphics par segments points
+#' @importFrom grDevices colorRampPalette
 #' @importFrom maptools gzAzimuth
 #' @importFrom stats aggregate approxfun density rnorm runif
 NULL
