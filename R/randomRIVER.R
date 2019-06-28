@@ -18,8 +18,6 @@
 #' par(mfrow=c(1,1))
 #' randomRIVER(nbreeding = 6, toplot=TRUE)
 #'
-#'
-#'
 #' @import igraph
 #' @importFrom stats runif
 #' @export
@@ -121,12 +119,12 @@ randomRIVER <- function(nwintering=4,
   sinks = which(apply(network,1, function(x) sum(which(x>0)))==0)
   if (anadromous==TRUE){
     # if(nbreeding != "ALL")
-      sinks = sinks[which(sort(dist[sinks,"supersink"],index.return = TRUE)$ix <= nbreeding)]
+    sinks = sinks[which(sort(dist[sinks,"supersink"],index.return = TRUE)$ix <= nbreeding)]
     site_list$B <- 0
     site_list$B[sinks+1] <- 1
-  } else{
+  }else{
     # if(nwintering != "ALL")
-      sinks = sinks[which(sort(dist[sinks,"supersink"],index.return = TRUE)$ix <= nwintering)]
+    sinks = sinks[which(sort(dist[sinks,"supersink"],index.return = TRUE)$ix <= nwintering)]
     site_list$NB <- 0
     site_list$NB[sinks+1] <- 1
   }
@@ -157,10 +155,10 @@ randomRIVER <- function(nwintering=4,
   nodes$Lon_to   = unlist(lapply(1:nrow(nodes), function(i) as.numeric(site_list$Lon[site_list$Site %in% nodes[i,2]])))
 
 
-  neti <- weight
-  E(neti)$weight <- flow$flow
-  network <- as.matrix(as_adjacency_matrix(neti, attr="weight"))
-  # neti[neti== "."] <- flow$flow
+  # neti <- weight
+  # E(neti)$weight <- flow$flow
+  # network <- as.matrix(as_adjacency_matrix(neti, attr="weight"))
+  # # neti[neti== "."] <- flow$flow
 
 
   weight <- delete.vertices(weight, c(1, length(V(weight))))
@@ -270,7 +268,6 @@ randomRIVER <- function(nwintering=4,
     nodes$Lon_from = unlist(lapply(1:nrow(nodes), function(i) as.numeric(sites$Lon[sites$Site %in% nodes[i,1]])))
     nodes$Lat_to   = unlist(lapply(1:nrow(nodes), function(i) as.numeric(sites$Lat[sites$Site %in% nodes[i,2]])))
     nodes$Lon_to   = unlist(lapply(1:nrow(nodes), function(i) as.numeric(sites$Lon[sites$Site %in% nodes[i,2]])))
-
 
     # library(shape)
     # par(mfrow=c(1,1))

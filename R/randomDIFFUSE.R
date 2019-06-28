@@ -123,11 +123,11 @@ randomDIFFUSE <- function(nbreeding = 10,
   Azi_P <- absAZIMUTH(dist, lonlats=sites )#+0.01
 
   # make birds/animals prefer sites which a larger prioritisation of the population has been seen and where the distance is better
-  network <-  Azi_P  * Pop_P * Dist_P
+  network <-  Azi_P  * Pop_P #* Dist_P
   Dist_P <- (max(dist)-dist) / max(dist)
 
-  network[, which(sites$SM == 1 & sites$Pop == pop)] <- Azi_P[, which(sites$SM == 1 & sites$Pop == pop)]*Pop_P[, which(sites$SM == 1 & sites$Pop == pop)]*Dist_P[, which(sites$SM == 1 & sites$Pop == pop)]
-  network[which(sites$SM == 1 & sites$Pop == pop), ] <- Azi_P[which(sites$SM == 1 & sites$Pop == pop), ]*Pop_P[which(sites$SM == 1 & sites$Pop == pop), ]*Dist_P[which(sites$SM == 1 & sites$Pop == pop), ]
+  # network[, which(sites$SM == 1 & sites$Pop == pop)] <- Azi_P[, which(sites$SM == 1 & sites$Pop == pop)]*Pop_P[, which(sites$SM == 1 & sites$Pop == pop)]*Dist_P[, which(sites$SM == 1 & sites$Pop == pop)]
+  # network[which(sites$SM == 1 & sites$Pop == pop), ] <- Azi_P[which(sites$SM == 1 & sites$Pop == pop), ]*Pop_P[which(sites$SM == 1 & sites$Pop == pop), ]*Dist_P[which(sites$SM == 1 & sites$Pop == pop), ]
 
 
   # Make the network directed
@@ -165,13 +165,13 @@ randomDIFFUSE <- function(nbreeding = 10,
   Azi_P <- absAZIMUTH(dist, lonlats=sites )#+0.01
 
   # make birds/animals prefer sites which a larger prioritisation of the population has been seen and where the distance is better
-  network <-  Azi_P  *Pop_P * Dist_P
+  network <-  Azi_P  *Pop_P #* Dist_P
 
   # Make the network directed
   network <- directedNET(network, include_diagonal = TRUE)
-  Dist_P <- (max(dist)-dist) / max(dist)
-  network[, which(sites$SM == 1 & sites$Pop == pop)] <- Azi_P[, which(sites$SM == 1 & sites$Pop == pop)]*Pop_P[, which(sites$SM == 1 & sites$Pop == pop)] * Dist_P[, which(sites$SM == 1 & sites$Pop == pop)]
-  network[which(sites$SM == 1 & sites$Pop == pop), ] <- Azi_P[which(sites$SM == 1 & sites$Pop == pop), ]*Pop_P[which(sites$SM == 1 & sites$Pop == pop), ]*Dist_P[which(sites$SM == 1 & sites$Pop == pop), ]
+  # Dist_P <- (max(dist)-dist) / max(dist)
+  # network[, which(sites$SM == 1 & sites$Pop == pop)] <- Azi_P[, which(sites$SM == 1 & sites$Pop == pop)]*Pop_P[, which(sites$SM == 1 & sites$Pop == pop)] * Dist_P[, which(sites$SM == 1 & sites$Pop == pop)]
+  # network[which(sites$SM == 1 & sites$Pop == pop), ] <- Azi_P[which(sites$SM == 1 & sites$Pop == pop), ]*Pop_P[which(sites$SM == 1 & sites$Pop == pop), ]*Dist_P[which(sites$SM == 1 & sites$Pop == pop), ]
 
   # Ensure that nodes only flow into the next 1 or two neighbouring nodes
   # for (i in 1:nrow(network)){
@@ -265,9 +265,9 @@ randomDIFFUSE <- function(nbreeding = 10,
   flow = max_flow(weight, source = V(weight)["Ssupersource"],
                   target = V(weight)["Nsupersource"], capacity = E(weight)$weight)
 
-  neti <- weight
-  E(neti)$weight <- flow$flow
-  network <- as.matrix(as_adjacency_matrix(neti, attr="weight"))
+  # neti <- weight
+  # E(neti)$weight <- flow$flow
+  # network <- as.matrix(as_adjacency_matrix(neti, attr="weight"))
 
   #created a weigted igraph network
   if (toplot == TRUE){

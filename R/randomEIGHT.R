@@ -439,10 +439,10 @@ randomEIGHT <- function(pop = 100000,
   # run the population through the network a forst time
   flow = max_flow(weight, source = V(weight)["Ssupersource"],
                   target = V(weight)["Nsupersource"], capacity = E(weight)$weight)
-
-  neti <- weight
-  E(neti)$weight <- flow$flow
-  network <- as.matrix(as_adjacency_matrix(neti, attr="weight"))
+#
+#   neti <- weight
+#   E(neti)$weight <- flow$flow
+#   network <- as.matrix(as_adjacency_matrix(neti, attr="weight"))
 
   #created a weigted igraph network
   if (toplot == TRUE){

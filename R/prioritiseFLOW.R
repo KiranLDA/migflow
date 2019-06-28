@@ -28,10 +28,36 @@
 #' rownames(network)[length(rownames(network))] <- "Nsupersink"
 #' sites <- net$sites
 #'
+#' # priotise sites according to flow through network
+#' prioritiseFLOW(network, sites, toplot=TRUE, returnNET=TRUE)
+#'
+#'
+#'
+#' # with a return network
+#' net <- randomPARALLEL(nwintering=40, sd_dist=2000, nbreeding=5)
+#' network <- shortenNET(net$network, from = "Ssupersink", to = "Nsupersink")
+#'
+#'
+#' colnames(network)[1]<- rownames(network)[1] <- "Ssupersource"
+#' colnames(network)[length(colnames(network))] <-  "Nsupersink"
+#' rownames(network)[length(rownames(network))] <- "Nsupersink"
+#' sites <- net$sites
 #'
 #' # priotise sites according to flow through network
 #' prioritiseFLOW(network, sites, toplot=TRUE, returnNET=TRUE)
 #'
+#'
+#' # with a return network
+#' net <- randomDIRECTED(nwintering=40, sd_dist=2000, nbreeding=5)
+#' network <- shortenNET(net$network, from = "Ssupersink", to = "Nsupersink")
+#'
+#' colnames(network)[1]<- rownames(network)[1] <- "Ssupersource"
+#' colnames(network)[length(colnames(network))] <-  "Nsupersink"
+#' rownames(network)[length(rownames(network))] <- "Nsupersink"
+#' sites <- net$sites
+#'
+#' # priotise sites according to flow through network
+#' prioritiseFLOW(network, sites, toplot=TRUE, returnNET=TRUE)
 #'
 #' @import igraph
 #' @importFrom graphics par segments points
@@ -44,15 +70,22 @@ prioritiseFLOW <- function(network,
                            # method ="igraph",
                            toplot = TRUE,
                            pop = 100000,
+                           # capacity,
                            returnNET = TRUE){
   # if (method == "igraph"){
   if(returnNET==FALSE){
     #created a weigted igraph network
     weight <- graph_from_adjacency_matrix(network,  mode="directed", weighted = TRUE)
 
+    if(!exists("capacity")){
+      capacity <- E(weight)$weight
+    }
+
     # run the population through the network a forst time
     flow = max_flow(weight, source = V(weight)["supersource"],
-                    target = V(weight)["supersink"], capacity = E(weight)$weight )
+                    target = V(weight)["supersink"],
+                    capacity = capacity)
+                      #E(weight)$weight )
 
     # plot flow network
     if (toplot == TRUE){
@@ -179,16 +212,29 @@ prioritiseFLOW <- function(network,
 
   if(returnNET==TRUE){
     #created a weigted igraph network
-    weight <- graph_from_adjacency_matrix(network,  mode="directed", weighted = TRUE)
+    # network[network==0]<-0.01
+    weight <- graph_from_adjacency_matrix(network, mode="directed", weighted = TRUE)
+
+
+#     if(!exists("capacity")){
+#       capacity <- E(weight)$weight
+#     }
+
+    sourcename = rownames(network)[1]
+    sinkname =  colnames(network)[length(colnames(network))]
 
     # run the population through the network a forst time
-    flow = max_flow(weight, source = V(weight)["Ssupersource"],
-                    target = V(weight)["Nsupersink"], capacity = E(weight)$weight )
+    flow = max_flow(weight, source = V(weight)[sourcename],
+                    target = V(weight)[sinkname],
+                    capacity = E(weight)$weight )
+                   # capacity = capacity)
+
+
 
 
     nodes = get.edgelist(weight, names=TRUE)
     nodes = as.data.frame(nodes)
-    nodes$flow = flow$flow
+    nodes$flow = flow$flow #E(weight)$weight#
     # nodes3 <- nodes
     nodes$V1 <- substring(nodes$V1, 2)
     nodes$V2 <- substring(nodes$V2, 2)
@@ -213,17 +259,27 @@ prioritiseFLOW <- function(network,
     # specify the site to remove, in this case, it is the site which contributes less to population flow
     to_remove = which(nodeflow$x %in% min(nodeflow$x))
 
+    # calculate betweeness
+    betweenness <- betweenness(weight, weights = flow$flow+0.0001)
+    names(betweenness) <- substring(names(betweenness), 2)
+    between <- c()
+    for (n in as.character(nodeflow$Category[to_remove])){
+      between <- c(between, sum(betweenness[which(names(betweenness) == n)]))
+    }
+
 
     # empty dataset to store output
     prioritisation <- data.frame(Site=as.character(nodeflow$Category[to_remove]),
-                                 Pop_Flow =   flow$value,
-                                 Site_Flow =   nodeflow$x[to_remove])
+                                 Pop_Flow =  flow$value,#as.numeric(sites$Pop[1]),#
+                                 Site_Flow =   nodeflow$x[to_remove],
+                                 betweenness = between,
+                                 average_path = average.path.length(weight))
     # make sure it is numeric
     nodeflow$Category = as.numeric(as.character(nodeflow$Category))
 
-
     if (toplot == TRUE){
-      par(mar=c(2,2,2,2), mfrow=c(1,3))
+      par(mar=c(2,2,2,2), mfrow=c(2,2))
+
       #plot empty points
       index=2:(nrow(sites)-1)
       plot(sites$Lon[index], sites$Lat[index], pch=16,
@@ -237,18 +293,17 @@ prioritiseFLOW <- function(network,
                x1 = nodes2$Lon_to[index],
                y1 = nodes2$Lat_to[index],
                col= "black",
-               lwd=(nodes2$flow[index]/(max(nodes2$flow))+0.1)*20)
+               lwd=(nodes2$flow[index]/(max(nodes2$flow)))*15)
 
       #plot nodes
-      index=2:(nrow(sites)-1)#as.numeric(nodeflowplot$Category)+1
+      index=2:(nrow(sites)-1)
       colorz = ifelse(sites$B[index]==1,"royalblue",ifelse(sites$NB[index]==1,"orange","gray"))
       points(sites$Lon[index],
              sites$Lat[index],
              pch=21,
              cex=((as.numeric(sites$Pop[index])/max(as.numeric(sites$Pop[index])))+0.4)*4,
-             #(((nodeflowplot$x)/
-             # as.numeric(max(nodeflowplot$x)))+0.4)*4,
-             bg=colorz , col="black")
+             bg=colorz,
+             col="black")
     }
 
 
@@ -271,11 +326,15 @@ prioritiseFLOW <- function(network,
 
     while(nrow(sites) > 2 & sum(network)>0){
 
-
       weight <- graph_from_adjacency_matrix(network,  mode="directed", weighted = TRUE)
 
-      flow = max_flow(weight, source = V(weight)["supersource"],
-                      target = V(weight)["supersink"], capacity = E(weight)$weight )
+      sourcename = rownames(network)[1]
+      sinkname =  colnames(network)[length(colnames(network))]
+
+      # run the population through the network a forst time
+      flow = max_flow(weight, source = V(weight)[sourcename],
+                      target = V(weight)[sinkname],
+                      E(weight)$weight)
 
       nodes = get.edgelist(weight, names=TRUE)
       nodes = as.data.frame(nodes)
@@ -293,13 +352,24 @@ prioritiseFLOW <- function(network,
       nodeflow = nodeflow[nodeflow$Category != "supersource" & nodeflow$Category != "supersink",]
       to_remove = which(nodeflow$x %in% min(nodeflow$x))
 
+      betweenness <- betweenness(weight, weights = flow$flow+0.0001)
+      # names(betweenness) <- substring(names(betweenness), 2)
+      between <- c()
+      for (n in as.character(nodeflow$Category[to_remove])){
+        between <- c(between, sum(betweenness[which(names(betweenness) == n)]))
+      }
+
+
+
       prioritisation <- rbind(prioritisation,
                               data.frame(Site=as.character(nodeflow$Category[to_remove]),
                                          Pop_Flow =   flow$value,
-                                         Site_Flow =   nodeflow$x[to_remove]))
+                                         Site_Flow =   nodeflow$x[to_remove],
+                                         betweenness = between,
+                                         average_path = average.path.length(weight)))
 
       net_remove = which(colnames(network) %in% as.character(nodeflow$Category[to_remove]))
-      network[-net_remove,-net_remove ]
+      # network[-net_remove,-net_remove ]
       network = network[-net_remove,-net_remove ]
       sites = sites[!(sites$Site %in% as.character(nodeflow$Category[to_remove])),]
 
@@ -321,6 +391,13 @@ prioritiseFLOW <- function(network,
            col = colorRampPalette(c("royalblue", "orange"))(nrow(full_site_list)-1)[1:(nrow(full_site_list)-1)],
            xlab="Site carrying capacity",
            ylab="Change in population size when site lost")
+
+      par(mar=c(4,4,1,1))
+      plot(prioritisation$average_path, prioritisation$betweenness, pch=16,
+           col = colorRampPalette(c("royalblue", "orange"))(nrow(full_site_list)-1)[1:(nrow(full_site_list)-1)],
+           xlab="Average path length",
+           ylab="Betweenness")
+
     }
   }
   return(list(# method = method,

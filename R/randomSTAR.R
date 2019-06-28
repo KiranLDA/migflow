@@ -230,9 +230,9 @@ randomSTAR <- function(pop = 100000,
   nodes$Lon_to   = unlist(lapply(1:nrow(nodes), function(i) as.numeric(site_list$Lon[site_list$Site %in% nodes[i,2]])))
 
 
-  neti <- weight
-  E(neti)$weight <- flow$flow
-  network <- as.matrix(as_adjacency_matrix(neti, attr="weight"))
+  # neti <- weight
+  # E(neti)$weight <- flow$flow
+  # network <- as.matrix(as_adjacency_matrix(neti, attr="weight"))
   # neti[neti== "."] <- flow$flow
 
   # if (toplot == TRUE){
@@ -341,7 +341,7 @@ randomSTAR <- function(pop = 100000,
     plot(sites$Lon[index], sites$Lat[index], pch=16,
          cex=0, xlab="", ylab="", xaxt="n", yaxt = "n",
          frame.plot=FALSE)
-  }
+
 
   index=1:nrow(nodes)
   segments(x0 = nodes$Lon_from[index],
@@ -351,7 +351,7 @@ randomSTAR <- function(pop = 100000,
            col= "black",
            lwd=(nodes$flow[index]/(max(nodes$flow)))*30)
 
-
+  }
   # sort sites by flow
   nodeflow = merge(aggregate(nodes$flow, by=list(Category=as.character(nodes$V1)), FUN=sum),
                    aggregate(nodes$flow, by=list(Category=as.character(nodes$V2)), FUN=sum), all=T)

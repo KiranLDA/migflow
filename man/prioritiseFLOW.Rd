@@ -42,9 +42,35 @@ colnames(network)[length(colnames(network))] <-  "Nsupersink"
 rownames(network)[length(rownames(network))] <- "Nsupersink"
 sites <- net$sites
 
+# priotise sites according to flow through network
+prioritiseFLOW(network, sites, toplot=TRUE, returnNET=TRUE)
+
+
+
+# with a return network
+net <- randomPARALLEL(nwintering=40, sd_dist=2000, nbreeding=5)
+network <- shortenNET(net$network, from = "Ssupersink", to = "Nsupersink")
+
+
+colnames(network)[1]<- rownames(network)[1] <- "Ssupersource"
+colnames(network)[length(colnames(network))] <-  "Nsupersink"
+rownames(network)[length(rownames(network))] <- "Nsupersink"
+sites <- net$sites
 
 # priotise sites according to flow through network
 prioritiseFLOW(network, sites, toplot=TRUE, returnNET=TRUE)
 
+
+# with a return network
+net <- randomDIRECTED(nwintering=40, sd_dist=2000, nbreeding=5)
+network <- shortenNET(net$network, from = "Ssupersink", to = "Nsupersink")
+
+colnames(network)[1]<- rownames(network)[1] <- "Ssupersource"
+colnames(network)[length(colnames(network))] <-  "Nsupersink"
+rownames(network)[length(rownames(network))] <- "Nsupersink"
+sites <- net$sites
+
+# priotise sites according to flow through network
+prioritiseFLOW(network, sites, toplot=TRUE, returnNET=TRUE)
 
 }

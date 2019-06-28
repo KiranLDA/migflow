@@ -36,6 +36,4 @@ This function generates a random migratory network
 par(mfrow=c(1,1))
 randomRIVER(nbreeding = 6, toplot=TRUE)
 
-
-
 }

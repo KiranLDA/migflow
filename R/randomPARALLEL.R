@@ -59,12 +59,12 @@ randomPARALLEL <- function(nbreeding = 10,
                    NM = 0)
 
   STP <- data.frame(Lat = runif(nstop, min=-10, max=30),
-                   Lon= runif(nstop, min=-20, max=20),
-                   Pop=runif(nstop, min=500, max=10000),
-                   B = 0,
-                   SM = 1,
-                   NB = 0,
-                   NM = 1)
+                    Lon= runif(nstop, min=-20, max=20),
+                    Pop=runif(nstop, min=500, max=10000),
+                    B = 0,
+                    SM = 1,
+                    NB = 0,
+                    NM = 1)
 
   sites = rbind(B, STP, NB)
   sites = sites[order(sites$Lat, decreasing=T),]
@@ -211,7 +211,7 @@ randomPARALLEL <- function(nbreeding = 10,
 
 
   network = network*pop
-
+  # image(exp(network))
   #----------------------------------
 
   sites <- site_list
@@ -220,30 +220,54 @@ randomPARALLEL <- function(nbreeding = 10,
   weight <- graph_from_adjacency_matrix(network,  mode="directed", weighted = TRUE)
 
   # run the population through the network a forst time
-  flow = max_flow(weight, source = V(weight)["Ssupersource"],
-                  target = V(weight)["Nsupersource"], capacity = E(weight)$weight)
+  flow = max_flow(weight,
+                  source = V(weight)["Ssupersource"],
+                  target = V(weight)["Nsupersource"],
+                  capacity = E(weight)$weight )
 
-  neti <- weight
-  E(neti)$weight <- flow$flow
-  network <- as.matrix(as_adjacency_matrix(neti, attr="weight"))
+  # capacity = E(weight)$weight
 
+  # neti <- weight
+  # E(neti)$weight <- flow$flow
+  # network <- as.matrix(as_adjacency_matrix(neti, attr="weight"))
+  # image(exp(network))
   #created a weigted igraph network
+
+  # plot flow network
+  nodes = get.edgelist(weight, names=TRUE)
+  nodes = as.data.frame(nodes)
+  nodes$flow = flow$flow
+
+  # network[nodes$V1,nodes$V2]<- nodes$flow
+
+
+  nodes$V1 <- substring(nodes$V1, 2)
+  nodes$V2 <- substring(nodes$V2, 2)
+  nodes = nodes[nodes$V1 != "supersource" & nodes$V1 != "supersink" & nodes$V2 != "supersource" & nodes$V2 != "supersink" ,]
+
+  nodes$Lat_from = unlist(lapply(1:nrow(nodes), function(i) as.numeric(sites$Lat[sites$Site %in% nodes[i,1]])))
+  nodes$Lon_from = unlist(lapply(1:nrow(nodes), function(i) as.numeric(sites$Lon[sites$Site %in% nodes[i,1]])))
+  nodes$Lat_to   = unlist(lapply(1:nrow(nodes), function(i) as.numeric(sites$Lat[sites$Site %in% nodes[i,2]])))
+  nodes$Lon_to   = unlist(lapply(1:nrow(nodes), function(i) as.numeric(sites$Lon[sites$Site %in% nodes[i,2]])))
+
+
+
+  # sort sites by flow
+  nodeflow = merge(aggregate(nodes$flow, by=list(Category=as.character(nodes$V1)), FUN=sum),
+                   aggregate(nodes$flow, by=list(Category=as.character(nodes$V2)), FUN=sum), all=T)
+  nodeflow$x = as.numeric(nodeflow$x)
+  nodeflow = data.frame( unique(as.matrix(nodeflow[ , 1:2 ]) ))
+  nodeflow$x = as.numeric(as.character(nodeflow$x))
+  nodeflow = nodeflow[nodeflow$Category != "supersource" & nodeflow$Category != "supersink",]
+
+  # make sure it is numeric
+  nodeflow$Category = as.numeric(as.character(nodeflow$Category))
+
+  # plot sites
+  nodeflowplot = nodeflow[order(nodeflow$Category),]
+
+
   if (toplot == TRUE){
-    # plot flow network
-    nodes = get.edgelist(weight, names=TRUE)
-    nodes = as.data.frame(nodes)
-    nodes$flow = flow$flow
-    nodes$V1 <- substring(nodes$V1, 2)
-    nodes$V2 <- substring(nodes$V2, 2)
-
-    nodes = nodes[nodes$V1 != "supersource" & nodes$V1 != "supersink" & nodes$V2 != "supersource" & nodes$V2 != "supersink" ,]
-
-    nodes$Lat_from = unlist(lapply(1:nrow(nodes), function(i) as.numeric(sites$Lat[sites$Site %in% nodes[i,1]])))
-    nodes$Lon_from = unlist(lapply(1:nrow(nodes), function(i) as.numeric(sites$Lon[sites$Site %in% nodes[i,1]])))
-    nodes$Lat_to   = unlist(lapply(1:nrow(nodes), function(i) as.numeric(sites$Lat[sites$Site %in% nodes[i,2]])))
-    nodes$Lon_to   = unlist(lapply(1:nrow(nodes), function(i) as.numeric(sites$Lon[sites$Site %in% nodes[i,2]])))
-
-
     # library(shape)
     par(mfrow=c(1,1))
     par(mar=c(4,4,4,4))
@@ -261,19 +285,6 @@ randomPARALLEL <- function(nbreeding = 10,
              lwd=(nodes$flow[index]/(max(nodes$flow)))*30)
 
 
-    # sort sites by flow
-    nodeflow = merge(aggregate(nodes$flow, by=list(Category=as.character(nodes$V1)), FUN=sum),
-                     aggregate(nodes$flow, by=list(Category=as.character(nodes$V2)), FUN=sum), all=T)
-    nodeflow$x = as.numeric(nodeflow$x)
-    nodeflow = data.frame( unique(as.matrix(nodeflow[ , 1:2 ]) ))
-    nodeflow$x = as.numeric(as.character(nodeflow$x))
-    nodeflow = nodeflow[nodeflow$Category != "supersource" & nodeflow$Category != "supersink",]
-
-    # make sure it is numeric
-    nodeflow$Category = as.numeric(as.character(nodeflow$Category))
-
-    # plot sites
-    nodeflowplot = nodeflow[order(nodeflow$Category),]
     index=as.numeric(nodeflowplot$Category)+1
     colorz = ifelse(sites$B[index]==1,"royalblue",ifelse(sites$NB[index]==1,"orange","gray"))
     points(sites$Lon[index],
@@ -286,6 +297,7 @@ randomPARALLEL <- function(nbreeding = 10,
 
   return(list( network = network,
                tracks = tracks,
+               # capacity = capacity,
                sites = site_list  ))
 
 }
