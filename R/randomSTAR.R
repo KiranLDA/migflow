@@ -40,10 +40,10 @@ randomSTAR <- function(pop = 100000,
   # minforks = 2
   # maxforks = 5
   # anadromous = TRUE
-  anadromous = FALSE
-  nwintering=50
-  nstop = 45
-  nbreeding=5
+  # anadromous = FALSE
+  # nwintering=50
+  # nstop = 45
+  # nbreeding=5
 
 
 

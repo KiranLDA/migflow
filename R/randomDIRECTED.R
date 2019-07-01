@@ -253,18 +253,12 @@ randomDIRECTED <- function(nbreeding = 3,
          cex=0, xlab="", ylab="", xaxt="n", yaxt = "n",
          frame.plot=FALSE)
 
-    index=1:nrow(nodes)#2:(nrow(nodes)-1)#
-    # Arrows(x0 = nodes$Lon_from[index],
-    #        y0 = nodes$Lat_from[index],
-    #        x1 = nodes$Lon_to[index],
-    #        y1 = nodes$Lat_to[index],
-    #        col= adjustcolor("royalblue3", alpha.f =  0.9))#,
-    #        # lwd=(nodes$flow[index]/(max(nodes$flow)))*30)#,#/500
+    index=1:nrow(nodes)
     segments(x0 = nodes$Lon_from[index],
              y0 = nodes$Lat_from[index],
              x1 = nodes$Lon_to[index],
              y1 = nodes$Lat_to[index],
-             col= "black",#adjustcolor("royalblue3", alpha.f = 0.9),
+             col= "black",
              lwd=(nodes$flow[index]/(max(nodes$flow)))*30)
 
 
