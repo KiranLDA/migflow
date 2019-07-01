@@ -60,14 +60,14 @@ randomSTAR <- function(pop = 100000,
   #ensure that branch lengths are not bigger than the number of sites
   diff <- nsites-sum(branch_lengths)
   diff
-  if(diff < 0) branch_lengths[which(branch_lengths == max(branch_lengths))] <-  branch_lengths[which(branch_lengths == max(branch_lengths))]+diff
-  if(diff > 0) branch_lengths[which(branch_lengths == min(branch_lengths))] <-  branch_lengths[which(branch_lengths == min(branch_lengths))]+diff
+  if(diff < 0) branch_lengths[which(branch_lengths == max(branch_lengths))[1]] <-  branch_lengths[which(branch_lengths == max(branch_lengths))[1]]+diff
+  if(diff > 0) branch_lengths[which(branch_lengths == min(branch_lengths))[1]] <-  branch_lengths[which(branch_lengths == min(branch_lengths))[1]]+diff
 
   diff <- nsites-sum(branch_lengths)
   diff
-  if(diff < 0) branch_lengths[which(branch_lengths == max(branch_lengths))] <-  branch_lengths[which(branch_lengths == max(branch_lengths))]+diff
-  if(diff > 0) branch_lengths[which(branch_lengths == min(branch_lengths))] <-  branch_lengths[which(branch_lengths == min(branch_lengths))]+diff
-
+  # if(diff < 0) branch_lengths[which(branch_lengths == max(branch_lengths))] <-  branch_lengths[which(branch_lengths == max(branch_lengths))]+diff
+  # if(diff > 0) branch_lengths[which(branch_lengths == min(branch_lengths))] <-  branch_lengths[which(branch_lengths == min(branch_lengths))]+diff
+  #
 
 
   site_counter = 1
