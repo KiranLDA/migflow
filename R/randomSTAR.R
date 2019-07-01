@@ -40,6 +40,10 @@ randomSTAR <- function(pop = 100000,
   # minforks = 2
   # maxforks = 5
   # anadromous = TRUE
+  anadromous = FALSE
+  nwintering=50
+  nstop = 45
+  nbreeding=5
 
 
 
@@ -55,8 +59,15 @@ randomSTAR <- function(pop = 100000,
 
   #ensure that branch lengths are not bigger than the number of sites
   diff <- nsites-sum(branch_lengths)
-  if(diff<0)branch_lengths[which(branch_lengths == max(branch_lengths))] <-  branch_lengths[which(branch_lengths == max(branch_lengths))]+diff
-  if(diff>0)branch_lengths[which(branch_lengths == min(branch_lengths))] <-  branch_lengths[which(branch_lengths == min(branch_lengths))]+diff
+  diff
+  if(diff < 0) branch_lengths[which(branch_lengths == max(branch_lengths))] <-  branch_lengths[which(branch_lengths == max(branch_lengths))]+diff
+  if(diff > 0) branch_lengths[which(branch_lengths == min(branch_lengths))] <-  branch_lengths[which(branch_lengths == min(branch_lengths))]+diff
+
+  diff <- nsites-sum(branch_lengths)
+  diff
+  if(diff < 0) branch_lengths[which(branch_lengths == max(branch_lengths))] <-  branch_lengths[which(branch_lengths == max(branch_lengths))]+diff
+  if(diff > 0) branch_lengths[which(branch_lengths == min(branch_lengths))] <-  branch_lengths[which(branch_lengths == min(branch_lengths))]+diff
+
 
 
   site_counter = 1
