@@ -57,6 +57,10 @@ randomSTAR <- function(pop = 100000,
   branch_lengths <- round(nsites *samples)
   # branch_lengths <- branch_lengths[!(branch_lengths<3)]
 
+  if(any(branch_lengths < 4)){
+    branch_lengths[which(branch_lengths < 4)] <- branch_lengths[which(branch_lengths < 4)] + ( 4- branch_lengths[which(branch_lengths < 4)])
+  }
+
   #ensure that branch lengths are not bigger than the number of sites
   diff <- nsites-sum(branch_lengths)
   diff
@@ -67,7 +71,7 @@ randomSTAR <- function(pop = 100000,
   diff
   # if(diff < 0) branch_lengths[which(branch_lengths == max(branch_lengths))] <-  branch_lengths[which(branch_lengths == max(branch_lengths))]+diff
   # if(diff > 0) branch_lengths[which(branch_lengths == min(branch_lengths))] <-  branch_lengths[which(branch_lengths == min(branch_lengths))]+diff
-  #
+
 
 
   site_counter = 1
