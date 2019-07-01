@@ -45,8 +45,6 @@ randomSTAR <- function(pop = 100000,
   # nstop = 45
   # nbreeding=5
 
-
-
   nsites = nwintering + nbreeding + nstop
   branches = ifelse(anadromous == TRUE, nwintering, nbreeding)
 

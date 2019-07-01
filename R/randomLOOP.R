@@ -139,7 +139,7 @@ randomLOOP <- function(pop = 100000,
   dist <- point2DIST(sites)
 
   # calculate the probability of going between these sites given the distance the animal can travel
-  Dist_P <- distPROB(tracks, dist, adjust=1, plot=F)
+  Dist_P <- distPROB(tracks, dist, adjust=1, plot=F) +0.01
 
   # Calculate prioritisation of population using a site
   Pop_P <- nodePopPROP(sites, population = pop)
@@ -172,7 +172,7 @@ randomLOOP <- function(pop = 100000,
   # dist <- point2DIST(sites)
   #
   # # calculate the probability of going between these sites given the distance the animal can travel
-  # Dist_P <- distPROB(tracks, dist, adjust=1, plot=F)
+  # Dist_P <- distPROB(tracks, dist, adjust=1, plot=F) +0.01
   #
   # # Calculate prioritisation of population using a site
   # Pop_P <- nodePopPROP(sites, population = pop)
@@ -207,7 +207,7 @@ randomLOOP <- function(pop = 100000,
   dist <- point2DIST(sites)
 
   # calculate the probability of going between these sites given the distance the animal can travel
-  Dist_P <- distPROB(tracks, dist, adjust=1, plot=F)
+  Dist_P <- distPROB(tracks, dist, adjust=1, plot=F) +0.01
 
   # Calculate prioritisation of population using a site
   Pop_P <- nodePopPROP(sites, population = pop)
@@ -266,7 +266,7 @@ randomLOOP <- function(pop = 100000,
   dist <- point2DIST(sites)
 
   # calculate the probability of going between these sites given the distance the animal can travel
-  Dist_P <- distPROB(tracks, dist, adjust=1, plot=F)
+  Dist_P <- distPROB(tracks, dist, adjust=1, plot=F) +0.01
 
   # Calculate prioritisation of population using a site
   Pop_P <- nodePopPROP(sites, population = pop)
@@ -299,7 +299,7 @@ randomLOOP <- function(pop = 100000,
   # dist <- point2DIST(sites)
   #
   # # calculate the probability of going between these sites given the distance the animal can travel
-  # Dist_P <- distPROB(tracks, dist, adjust=1, plot=F)
+  # Dist_P <- distPROB(tracks, dist, adjust=1, plot=F) +0.01
   #
   # # Calculate prioritisation of population using a site
   # Pop_P <- nodePopPROP(sites, population = pop)
@@ -334,7 +334,7 @@ randomLOOP <- function(pop = 100000,
   dist <- point2DIST(sites)
 
   # calculate the probability of going between these sites given the distance the animal can travel
-  Dist_P <- distPROB(tracks, dist, adjust=1, plot=F)
+  Dist_P <- distPROB(tracks, dist, adjust=1, plot=F) +0.01
 
   # Calculate prioritisation of population using a site
   Pop_P <- nodePopPROP(sites, population = pop)
