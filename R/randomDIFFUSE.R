@@ -113,7 +113,7 @@ randomDIFFUSE <- function(nbreeding = 10,
   dist <- point2DIST(sites)
 
   # calculate the probability of going between these sites given the distance the animal can travel
-  Dist_P <- distPROB(tracks, dist, adjust=1, plot=F) + 0.01
+  Dist_P <- distPROB(tracks, dist, adjust=1, plot=F) + 0.0001
   # Dist_P <- (max(dist)-dist) / max(dist)
 
   # Calculate prioritisation of population using a site
@@ -156,7 +156,7 @@ randomDIFFUSE <- function(nbreeding = 10,
   dist <- point2DIST(sites)
 
   # calculate the probability of going between these sites given the distance the animal can travel
-  Dist_P <- distPROB(tracks, dist, adjust=1, plot=F) + 0.01
+  Dist_P <- distPROB(tracks, dist, adjust=1, plot=F) + 0.0001
 
   # Calculate prioritisation of population using a site
   Pop_P <- nodePopPROP(sites, population = pop)

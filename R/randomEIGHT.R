@@ -153,7 +153,7 @@ randomEIGHT <- function(pop = 100000,
   Azi_P <- absAZIMUTH(dist, lonlats=sites )
 
   # make birds/animals prefer sites which a larger prioritisation of the population has been seen and where the distance is better
-  network <- (Dist_P+0.01) * Pop_P * Azi_P
+  network <- (Dist_P+0.0001) * Pop_P * Azi_P
 
   # Make the network directed
   network1 <- directedNET(network, include_diagonal = TRUE)
@@ -186,7 +186,7 @@ randomEIGHT <- function(pop = 100000,
   Azi_P <- absAZIMUTH(dist, lonlats=sites )
 
   # make birds/animals prefer sites which a larger prioritisation of the population has been seen and where the distance is better
-  network <- (Dist_P+0.01) * Pop_P * Azi_P
+  network <- (Dist_P+0.0001) * Pop_P * Azi_P
 
   # Make the network directed
   # network2 <- directedNET(network, include_diagonal = TRUE)
@@ -221,7 +221,7 @@ randomEIGHT <- function(pop = 100000,
   Azi_P <- absAZIMUTH(dist, lonlats=sites )
 
   # make birds/animals prefer sites which a larger prioritisation of the population has been seen and where the distance is better
-  network <- (Dist_P+0.01) * Pop_P * Azi_P
+  network <- (Dist_P+0.0001) * Pop_P * Azi_P
 
   # Make the network directed
   # network2 <- directedNET(network, include_diagonal = TRUE)
@@ -280,7 +280,7 @@ randomEIGHT <- function(pop = 100000,
   Azi_P <- absAZIMUTH(dist, lonlats=sites )
 
   # make birds/animals prefer sites which a larger prioritisation of the population has been seen and where the distance is better
-  network <- (Dist_P+0.01) * Pop_P * Azi_P
+  network <- (Dist_P+0.0001) * Pop_P * Azi_P
 
   # Make the network directed
   network1 <- directedNET(network, include_diagonal = TRUE)
@@ -313,7 +313,7 @@ randomEIGHT <- function(pop = 100000,
   Azi_P <- absAZIMUTH(dist, lonlats=sites )
 
   # make birds/animals prefer sites which a larger prioritisation of the population has been seen and where the distance is better
-  network <- (Dist_P+0.01) * Pop_P * Azi_P
+  network <- (Dist_P+0.0001) * Pop_P * Azi_P
 
   # Make the network directed
   # network2 <- directedNET(network, include_diagonal = TRUE)
@@ -348,7 +348,7 @@ randomEIGHT <- function(pop = 100000,
   Azi_P <- absAZIMUTH(dist, lonlats=sites )
 
   # make birds/animals prefer sites which a larger prioritisation of the population has been seen and where the distance is better
-  network <- (Dist_P+0.01)  * Azi_P #* Pop_P
+  network <- (Dist_P+0.0001)  * Azi_P #* Pop_P
 
 
   # Make the network directed
