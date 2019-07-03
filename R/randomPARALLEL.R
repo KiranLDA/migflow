@@ -91,7 +91,7 @@ randomPARALLEL <- function(nbreeding = 10,
   dist <- point2DIST(sites)
 
   # calculate the probability of going between these sites given the distance the animal can travel
-  Dist_P <- distPROB(tracks, dist, adjust=1, plot=F) +0.0001
+  Dist_P <- distPROB(tracks, dist, adjust=1, plot=F) +0.000000000000001
   # Dist_P <- (max(dist)-dist) / max(dist)
 
   # Calculate prioritisation of population using a site
@@ -101,7 +101,7 @@ randomPARALLEL <- function(nbreeding = 10,
   Azi_P <- absAZIMUTH(dist, lonlats=sites )#+0.01
 
   # make birds/animals prefer sites which a larger prioritisation of the population has been seen and where the distance is better
-  network <-  Azi_P * Dist_P #*Pop_P
+  network <-  ( Azi_P/max(Azi_P) ) * Dist_P #*Pop_P
 
   # Make the network directed
   network <- directedNET(network, include_diagonal = TRUE)
@@ -122,7 +122,7 @@ randomPARALLEL <- function(nbreeding = 10,
   dist <- point2DIST(sites)
 
   # calculate the probability of going between these sites given the distance the animal can travel
-  Dist_P <- distPROB(tracks, dist, adjust=1, plot=F) +0.0001
+  Dist_P <- distPROB(tracks, dist, adjust=1, plot=F) +0.000000000000001
 
   # Calculate prioritisation of population using a site
   Pop_P <- nodePopPROP(sites, population = pop)
@@ -131,7 +131,7 @@ randomPARALLEL <- function(nbreeding = 10,
   Azi_P <- absAZIMUTH(dist, lonlats=sites )#+0.01
 
   # make birds/animals prefer sites which a larger prioritisation of the population has been seen and where the distance is better
-  network <-  Azi_P * Dist_P #*Pop_P
+  network <- ( Azi_P/max(Azi_P) ) * Dist_P #*Pop_P
 
   # Make the network directed
   network <- directedNET(network, include_diagonal = TRUE)
