@@ -29,7 +29,7 @@
 #' sites <- net$sites
 #'
 #' # priotise sites according to flow through network
-#' prioritiseFLOW(network, sites, toplot=TRUE, returnNET=TRUE)
+#' removeRANDOM(network, sites, toplot=TRUE, returnNET=TRUE)
 #'
 #'
 #'
@@ -48,7 +48,7 @@
 #'
 #'
 #' # with a return network
-#' net <- randomDIRECTED(nwintering=40, sd_dist=2000, nbreeding=5)
+#' net <- randomDIRECTED(nwintering=5, sd_dist=2000, nbreeding=5)
 #' network <- shortenNET(net$network, from = "Ssupersink", to = "Nsupersink")
 #'
 #' colnames(network)[1]<- rownames(network)[1] <- "Ssupersource"
@@ -126,7 +126,7 @@ removeRANDOM <- function(network,
     nodeflow = nodeflow[nodeflow$Category != "supersource" & nodeflow$Category != "supersink",]
 
     # specify the site to remove, in this case, it is the site which contributes less to population flow
-    to_remove = which(nodeflow$x %in% min(nodeflow$x))
+    to_remove = round(runif(1,1,length(nodeflow$x)))#which(nodeflow$x %in% min(nodeflow$x))
 
     # empty dataset to store output
     prioritisation <- data.frame(Site=as.character(nodeflow$Category[to_remove]),
@@ -177,7 +177,7 @@ removeRANDOM <- function(network,
       nodeflow$x = as.numeric(as.character(nodeflow$x))
 
       nodeflow = nodeflow[nodeflow$Category != "supersource" & nodeflow$Category != "supersink",]
-      to_remove = round(runif,1:length(nodeflow$x))#which(nodeflow$x %in% min(nodeflow$x))
+      to_remove = round(runif(1,1,length(nodeflow$x)))#which(nodeflow$x %in% min(nodeflow$x))
 
       prioritisation <- rbind(prioritisation,
                               data.frame(Site=as.character(nodeflow$Category[to_remove]),
@@ -257,7 +257,7 @@ removeRANDOM <- function(network,
     nodeflow = nodeflow[nodeflow$Category != "supersource" & nodeflow$Category != "supersink",]
 
     # specify the site to remove, in this case, it is the site which contributes less to population flow
-    to_remove = which(nodeflow$x %in% min(nodeflow$x))
+    to_remove = round(runif(1,1,length(nodeflow$x)))#which(nodeflow$x %in% min(nodeflow$x))
 
     # calculate betweeness
     betweenness <- betweenness(weight, weights = flow$flow+0.0001)
@@ -350,7 +350,7 @@ removeRANDOM <- function(network,
       nodeflow$x = as.numeric(as.character(nodeflow$x))
 
       nodeflow = nodeflow[nodeflow$Category != "supersource" & nodeflow$Category != "supersink",]
-      to_remove = round(runif,1:length(nodeflow$x))#which(nodeflow$x %in% min(nodeflow$x))
+      to_remove = round(runif(1,1,length(nodeflow$x)))#which(nodeflow$x %in% min(nodeflow$x))
 
       betweenness <- betweenness(weight, weights = flow$flow+0.0001)
       # names(betweenness) <- substring(names(betweenness), 2)
