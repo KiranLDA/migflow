@@ -3,6 +3,7 @@
 export(absAZIMUTH)
 export(addSUPERNODE)
 export(curvCALC)
+export(degradeSITES)
 export(directedNET)
 export(distPROB)
 export(nodePopPROP)

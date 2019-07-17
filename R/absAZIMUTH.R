@@ -31,7 +31,7 @@ absAZIMUTH <- function(dist, lonlats){
    z = gzAzimuth(c(xLon,xLat),c(yLon,yLat))
    if(is.na(z)) z=90
    return(abs(cos(z*pi/180)))}))
-
+ output[index0[,3], index0[,4]] <- as.numeric(index0[,6])
  output[which(dist==0)] = 0
 
  output[is.na(output)]= 0

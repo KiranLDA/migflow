@@ -101,7 +101,7 @@ randomPARALLEL <- function(nbreeding = 10,
   Azi_P <- absAZIMUTH(dist, lonlats=sites )#+0.01
 
   # make birds/animals prefer sites which a larger prioritisation of the population has been seen and where the distance is better
-  network <-  ( Azi_P/max(Azi_P) ) * Dist_P #*Pop_P
+  network <-  Azi_P^2 * Dist_P #*Pop_P( Azi_P/max(Azi_P) )
 
   # Make the network directed
   network <- directedNET(network, include_diagonal = TRUE)
@@ -131,7 +131,7 @@ randomPARALLEL <- function(nbreeding = 10,
   Azi_P <- absAZIMUTH(dist, lonlats=sites )#+0.01
 
   # make birds/animals prefer sites which a larger prioritisation of the population has been seen and where the distance is better
-  network <- ( Azi_P/max(Azi_P) ) * Dist_P #*Pop_P
+  network <-  Azi_P^2 * Dist_P #*Pop_P( Azi_P/max(Azi_P) )
 
   # Make the network directed
   network <- directedNET(network, include_diagonal = TRUE)

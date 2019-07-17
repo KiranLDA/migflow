@@ -22,7 +22,7 @@ randomDIFFUSE <- function(nbreeding = 10,
                          nstop = 30,
                          pop = 100000,
                          mean_dist = 0,
-                         sd_dist = 500,
+                         sd_dist = 1500,
                          toplot = TRUE){
 
   # # # For testing purposes
@@ -123,7 +123,7 @@ randomDIFFUSE <- function(nbreeding = 10,
   Azi_P <- absAZIMUTH(dist, lonlats=sites )#+0.01
 
   # make birds/animals prefer sites which a larger prioritisation of the population has been seen and where the distance is better
-  network <-  Azi_P  * Pop_P #* Dist_P
+  network <-  Azi_P  * Pop_P * Dist_P
   Dist_P <- (max(dist)-dist) / max(dist)
 
   # network[, which(sites$SM == 1 & sites$Pop == pop)] <- Azi_P[, which(sites$SM == 1 & sites$Pop == pop)]*Pop_P[, which(sites$SM == 1 & sites$Pop == pop)]*Dist_P[, which(sites$SM == 1 & sites$Pop == pop)]
@@ -165,7 +165,7 @@ randomDIFFUSE <- function(nbreeding = 10,
   Azi_P <- absAZIMUTH(dist, lonlats=sites )#+0.01
 
   # make birds/animals prefer sites which a larger prioritisation of the population has been seen and where the distance is better
-  network <-  Azi_P  *Pop_P #* Dist_P
+  network <-  Azi_P  *Pop_P * Dist_P
 
   # Make the network directed
   network <- directedNET(network, include_diagonal = TRUE)
