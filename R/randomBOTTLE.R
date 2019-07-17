@@ -103,7 +103,7 @@ randomBOTTLE <- function(nbreeding = 10,
   dist <- point2DIST(sites)
 
   # calculate the probability of going between these sites given the distance the animal can travel
-  Dist_P <- distPROB(tracks, dist, adjust=1, plot=F) +0.0001
+  Dist_P <- distPROB(tracks, dist, adjust=1, plot=F) +0.000000000000001
   # different!
   Dist_P[,bottleneck_idx] <- (max(dist)-dist[,bottleneck_idx]) / max(dist)
   Dist_P[bottleneck_idx,] <- (max(dist)-dist[bottleneck_idx,]) / max(dist)
@@ -151,7 +151,7 @@ randomBOTTLE <- function(nbreeding = 10,
   dist <- point2DIST(sites)
 
   # calculate the probability of going between these sites given the distance the animal can travel
-  Dist_P <- distPROB(tracks, dist, adjust=1, plot=F) +0.0001
+  Dist_P <- distPROB(tracks, dist, adjust=1, plot=F) +0.000000000000001
   # different!
   Dist_P[,bottleneck_idx] <- (max(dist)-dist[,bottleneck_idx]) / max(dist)
   Dist_P[bottleneck_idx,] <- (max(dist)-dist[bottleneck_idx,]) / max(dist)
