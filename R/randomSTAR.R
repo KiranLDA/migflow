@@ -32,17 +32,17 @@ randomSTAR <- function(pop = 100000,
                        anadromous = TRUE){
 
   # For testing purposes
-  # pop = 100000
-  # toplot= TRUE
-  # nbreeding = 40
+  pop = 100000
+  toplot= TRUE
+  nbreeding = 50
   # nwintering = 3
   # nstop=100
-  # minforks = 2
-  # maxforks = 5
-  # anadromous = TRUE
+  minforks = 2
+  maxforks = 5
+  anadromous = TRUE
   # anadromous = FALSE
-  # nwintering=50
-  # nstop = 45
+  nwintering=5
+  nstop = 200
   # nbreeding=5
 
   nsites = nwintering + nbreeding + nstop
@@ -55,23 +55,37 @@ randomSTAR <- function(pop = 100000,
   branch_lengths <- round(nsites *samples)
   # branch_lengths <- branch_lengths[!(branch_lengths<3)]
 
-  if(any(branch_lengths < 4)){
-    branch_lengths[which(branch_lengths < 4)] <- branch_lengths[which(branch_lengths < 4)] + ( 4- branch_lengths[which(branch_lengths < 4)])
-  }
+  # !KD
+  # if(any(branch_lengths < 3)){
+  #   branch_lengths[which(branch_lengths < 3)] <- (branch_lengths[which(branch_lengths < 3)]
+  #                                                 + ( 3- branch_lengths[which(branch_lengths < 3)]))
+  # }
+  #
+  branch_lengths
 
   #ensure that branch lengths are not bigger than the number of sites
   diff <- nsites-sum(branch_lengths)
   diff
-  if(diff < 0) branch_lengths[which(branch_lengths == max(branch_lengths))[1]] <-  branch_lengths[which(branch_lengths == max(branch_lengths))[1]]+diff
-  if(diff > 0) branch_lengths[which(branch_lengths == min(branch_lengths))[1]] <-  branch_lengths[which(branch_lengths == min(branch_lengths))[1]]+diff
+  if(diff < 0) branch_lengths[order(branch_lengths, decreasing = TRUE)[1:abs(diff)]] <-  branch_lengths[order(branch_lengths, decreasing = TRUE)[1:abs(diff)]]-1
 
+  #    if(length(max(branch_lengths))>=abs(diff)){
+  #    branch_lengths[which(branch_lengths == max(branch_lengths))[1:abs(diff)]] <-  branch_lengths[which(branch_lengths == max(branch_lengths))[1: abs(1)]]-1
+  # } }
+
+  if(diff > 0) branch_lengths[order(branch_lengths)[1:abs(diff)]] <-  branch_lengths[order(branch_lengths)[1:abs(diff)]]+1
+
+  # if(length(max(branch_lengths))>=abs(diff)){
+  # branch_lengths[which(branch_lengths == min(branch_lengths))[1:diff]] <-  branch_lengths[which(branch_lengths == min(branch_lengths))[1:diff]]+1
+  # }else{
+
+  # } }
   diff <- nsites-sum(branch_lengths)
   diff
   # if(diff < 0) branch_lengths[which(branch_lengths == max(branch_lengths))] <-  branch_lengths[which(branch_lengths == max(branch_lengths))]+diff
   # if(diff > 0) branch_lengths[which(branch_lengths == min(branch_lengths))] <-  branch_lengths[which(branch_lengths == min(branch_lengths))]+diff
 
 
-
+  branch_lengths
   site_counter = 1
   store = list()
   for (b in 1:branches){ # for every branch
@@ -110,52 +124,61 @@ randomSTAR <- function(pop = 100000,
     network <- directedNET(max(dist[2:(branch_lengths[b]+1), 2:(branch_lengths[b]+1)]) - dist[2:(branch_lengths[b]+1), 2:(branch_lengths[b]+1)], include_diagonal = TRUE)
     network[network==0] <- NA
 
-    i=1
-    forks <- round(runif(1,1,2))
-    sorted <- network[i,]
-    sorted[which(!is.na(sorted))] <- sort(network[i,which(!is.na(sorted))],index.return = TRUE)$ix
-    keep <- which (sorted >= (max(sorted,na.rm=TRUE) - (forks-1)))
-    # val= runif(length(keep),0,1)
-    network[i,] <- NA
-    network[i,keep] <- 1# val/(sum(val))
-
-    i=2
-    forks <- round(runif(1,minforks,maxforks))
-    sorted <- network[i,]
-    sorted[which(!is.na(sorted))] <- sort(network[i,which(!is.na(sorted))],index.return = TRUE)$ix
-    keep <- which (sorted >= (max(sorted,na.rm=TRUE) - (forks-1)))
-    already_inflowing <- which(!is.na(network[i-1,]))
-    keep <- keep[which(!(keep %in% already_inflowing))]
-    # val= runif(length(keep),0,1)
-    network[i,] <- NA
-    network[i,keep] <- 1# val/(sum(val))
-    if (sum(network[,i], na.rm=TRUE) == 0){
-      network[i-1,i]<- 1
+    if(branch_lengths[b] == 2){
+      network[1,2] = 1
     }
+    # if(branch_lengths[b] == 3){
+    #   network[1,2] = 1
+    #   network[2,3] = 1
+    # }
+    if(branch_lengths[b] >= 3){
 
+      i=1
+      forks <- round(runif(1,1,2))
+      sorted <- network[i,]
+      sorted[which(!is.na(sorted))] <- sort(network[i,which(!is.na(sorted))],index.return = TRUE)$ix
+      keep <- which (sorted >= (max(sorted,na.rm=TRUE) - (forks-1)))
+      # val= runif(length(keep),0,1)
+      network[i,] <- NA
+      network[i,keep] <- 1 # val/(sum(val))
 
-    suppressWarnings(for (i in 3:nrow(network)){
+      i=2
       forks <- round(runif(1,minforks,maxforks))
       sorted <- network[i,]
       sorted[which(!is.na(sorted))] <- sort(network[i,which(!is.na(sorted))],index.return = TRUE)$ix
-
-      if(any(duplicated(sorted[!is.na(sorted)]))){
-        idx <- which(any(duplicated(sorted[!is.na(sorted)])) == TRUE)
-        sorted[!is.na(sorted)][idx:length(sorted)] <- sorted[!is.na(sorted)][idx:length(sorted)]+1
-      }
-
       keep <- which (sorted >= (max(sorted,na.rm=TRUE) - (forks-1)))
-      already_inflowing <- which(apply(network[1:i-1,],2,sum,na.rm=TRUE)>0)
+      already_inflowing <- which(!is.na(network[i-1,]))
       keep <- keep[which(!(keep %in% already_inflowing))]
       # val= runif(length(keep),0,1)
       network[i,] <- NA
       network[i,keep] <- 1# val/(sum(val))
-
       if (sum(network[,i], na.rm=TRUE) == 0){
         network[i-1,i]<- 1
       }
-    })
 
+
+      suppressWarnings(for (i in 3:nrow(network)){
+        forks <- round(runif(1,minforks,maxforks))
+        sorted <- network[i,]
+        sorted[which(!is.na(sorted))] <- sort(network[i,which(!is.na(sorted))],index.return = TRUE)$ix
+
+        if(any(duplicated(sorted[!is.na(sorted)]))){
+          idx <- which(any(duplicated(sorted[!is.na(sorted)])) == TRUE)
+          sorted[!is.na(sorted)][idx:length(sorted)] <- sorted[!is.na(sorted)][idx:length(sorted)]+1
+        }
+
+        keep <- which (sorted >= (max(sorted,na.rm=TRUE) - (forks-1)))
+        already_inflowing <- which(apply(network[1:i-1,],2,sum,na.rm=TRUE)>0)
+        keep <- keep[which(!(keep %in% already_inflowing))]
+        # val= runif(length(keep),0,1)
+        network[i,] <- NA
+        network[i,keep] <- 1# val/(sum(val))
+
+        if (sum(network[,i], na.rm=TRUE) == 0){
+          network[i-1,i]<- 1
+        }
+      })
+    }
     site_counter <- site_counter + branch_lengths[b]
     store[[b]] <- list(network, site_list)
   }
@@ -184,13 +207,13 @@ randomSTAR <- function(pop = 100000,
   sinks = which(apply(network,1, function(x) sum(which(x>0)))==0)
   if (anadromous==TRUE){
     # if(nbreeding != "ALL")
-      sinks = sinks[which(sort(dist[sinks,"supersink"],index.return = TRUE)$ix <= nbreeding)]
+    sinks = sinks[which(sort(dist[sinks,"supersink"],index.return = TRUE)$ix <= nbreeding)]
     site_list$B <- 0
     site_list$B[sinks+1] <- 1
     network <- addSUPERNODE(network, sources= site_list$Site[site_list$NB == 1],sinks = sinks)
   }else{
     # if(nwintering != "ALL")
-      sinks = sinks[which(sort(dist[sinks,"supersink"],index.return = TRUE)$ix <= nwintering)]
+    sinks = sinks[which(sort(dist[sinks,"supersink"],index.return = TRUE)$ix <= nwintering)]
     site_list$NB <- 0
     site_list$NB[sinks+1] <- 1
     network <- addSUPERNODE(network, sources= site_list$Site[site_list$B == 1],sinks = sinks)
@@ -270,8 +293,6 @@ randomSTAR <- function(pop = 100000,
   #          vertex.label="",
   #          vertex.size = ((sizes/pop)*20)+5)
   #   }
-
-
 
   site_list$Pop <- apply(network,1,sum)#c(pop,sizes, pop)
   site_list$Pop[length(site_list$Pop)] <- pop
@@ -356,13 +377,13 @@ randomSTAR <- function(pop = 100000,
          frame.plot=FALSE)
 
 
-  index=1:nrow(nodes)
-  segments(x0 = nodes$Lon_from[index],
-           y0 = nodes$Lat_from[index],
-           x1 = nodes$Lon_to[index],
-           y1 = nodes$Lat_to[index],
-           col= "black",
-           lwd=(nodes$flow[index]/(max(nodes$flow)))*30)
+    index=1:nrow(nodes)
+    segments(x0 = nodes$Lon_from[index],
+             y0 = nodes$Lat_from[index],
+             x1 = nodes$Lon_to[index],
+             y1 = nodes$Lat_to[index],
+             col= "black",
+             lwd=(nodes$flow[index]/(max(nodes$flow)))*30)
 
   }
   # sort sites by flow
@@ -396,5 +417,3 @@ randomSTAR <- function(pop = 100000,
                sites = site_list))
 
 }
-
-
