@@ -16,7 +16,7 @@
 #'
 #' @examples
 #' # with a return network
-#' net <- randomBOTTLE(nwintering=5,mean_dist=0, sd_dist=1500, nbreeding=5)
+#' net <- randomPARALLEL(nwintering=5,mean_dist=0, sd_dist=1500, nbreeding=5)
 #' network <- shortenNET(net$network, from = "Ssupersink", to = "Nsupersink")
 #'
 #' colnames(network)[1]<- rownames(network)[1] <- "Ssupersource"
