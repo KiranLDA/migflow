@@ -19,6 +19,7 @@
 #' randomSTAR(nbreeding = 6, toplot=TRUE)
 #'
 #'
+#'
 #' @import igraph
 #' @importFrom stats runif
 #' @export
