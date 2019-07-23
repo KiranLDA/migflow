@@ -31,19 +31,19 @@ randomSTAR <- function(pop = 100000,
                        maxforks = 5,
                        anadromous = TRUE){
 
-  # For testing purposes
-  pop = 100000
-  toplot= TRUE
-  nbreeding = 50
-  # nwintering = 3
-  # nstop=100
-  minforks = 2
-  maxforks = 5
-  anadromous = TRUE
-  # anadromous = FALSE
-  nwintering=5
-  nstop = 200
-  # nbreeding=5
+  # # For testing purposes
+  # pop = 100000
+  # toplot= TRUE
+  # nbreeding = 50
+  # # nwintering = 3
+  # # nstop=100
+  # minforks = 2
+  # maxforks = 5
+  # anadromous = TRUE
+  # # anadromous = FALSE
+  # nwintering=5
+  # nstop = 200
+  # # nbreeding=5
 
   nsites = nwintering + nbreeding + nstop
   branches = ifelse(anadromous == TRUE, nwintering, nbreeding)
@@ -127,11 +127,11 @@ randomSTAR <- function(pop = 100000,
     if(branch_lengths[b] == 2){
       network[1,2] = 1
     }
-    # if(branch_lengths[b] == 3){
-    #   network[1,2] = 1
-    #   network[2,3] = 1
-    # }
-    if(branch_lengths[b] >= 3){
+    if(branch_lengths[b] == 3){
+      network[1,2] = 1
+      network[2,3] = 1
+    }
+    if(branch_lengths[b] > 3){
 
       i=1
       forks <- round(runif(1,1,2))
