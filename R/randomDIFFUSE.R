@@ -124,7 +124,7 @@ randomDIFFUSE <- function(nbreeding = 10,
 
   # make birds/animals prefer sites which a larger prioritisation of the population has been seen and where the distance is better
   network <-  Azi_P  * Pop_P * Dist_P
-  Dist_P <- (max(dist)-dist) / max(dist)
+  # Dist_P <- (max(dist)-dist) / max(dist)
 
   # network[, which(sites$SM == 1 & sites$Pop == pop)] <- Azi_P[, which(sites$SM == 1 & sites$Pop == pop)]*Pop_P[, which(sites$SM == 1 & sites$Pop == pop)]*Dist_P[, which(sites$SM == 1 & sites$Pop == pop)]
   # network[which(sites$SM == 1 & sites$Pop == pop), ] <- Azi_P[which(sites$SM == 1 & sites$Pop == pop), ]*Pop_P[which(sites$SM == 1 & sites$Pop == pop), ]*Dist_P[which(sites$SM == 1 & sites$Pop == pop), ]
