@@ -5,7 +5,8 @@
 \title{Gradually degrade sites}
 \usage{
 degradeSITES(network, sites, degrade = c("B", "STP", "NB"), mindeg = 1,
-  maxdeg = 10, toplot = TRUE, pop = 1e+05, returnNET = TRUE)
+  maxdeg = 10, toplot = TRUE, pop = 1e+05, iter = NA,
+  returnNET = TRUE)
 }
 \arguments{
 \item{network}{adjacency network describing where birds are going}
@@ -21,6 +22,8 @@ degradeSITES(network, sites, degrade = c("B", "STP", "NB"), mindeg = 1,
 \item{toplot}{TRUE/FALSE to determine whether the output is plotted or not}
 
 \item{pop}{number of individuals in the population}
+
+\item{iter}{number of iterations, if wanting the model to run until no population is left, then iter=NA}
 
 \item{returnNET}{TRUE/FALSE whether or not the network is a return network or not}
 }

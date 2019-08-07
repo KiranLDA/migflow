@@ -7,6 +7,7 @@
 #' @param degrade sites to degrade.Typically `c( "B", "STP", "NB")`. Can be B for breeding, STP for stopover sites, and/or NB for non-breeding residency
 #' @param mindeg minimum percentage to degrade the site by (i.e. reduce carrying capacity by 1 percent)
 #' @param maxdeg minimum percentage to degrade the site by (i.e. reduce carrying capacity by 10 percent)
+#' @param iter number of iterations, if wanting the model to run until no population is left, then iter=NA
 #' @param returnNET TRUE/FALSE whether or not the network is a return network or not
 #' @param toplot TRUE/FALSE to determine whether the output is plotted or not
 #' @param pop number of individuals in the population
@@ -37,6 +38,7 @@ degradeSITES <- function(network,
                          maxdeg = 10,
                          toplot = TRUE,
                          pop = 100000,
+                         iter=NA,
                          returnNET = TRUE){
 
 
@@ -48,6 +50,9 @@ degradeSITES <- function(network,
   # colnames(network)[length(colnames(network))] <-  "Nsupersink"
   # rownames(network)[length(rownames(network))] <- "Nsupersink"
   # sites <- net$sites
+
+
+
   if(returnNET == TRUE){
 
     #created a weigted igraph network
@@ -60,9 +65,6 @@ degradeSITES <- function(network,
     flow = max_flow(weight, source = V(weight)[sourcename],
                     target = V(weight)[sinkname],
                     capacity = E(weight)$weight )
-
-
-
 
 
     nodes = get.edgelist(weight, names=TRUE)
@@ -183,78 +185,160 @@ degradeSITES <- function(network,
     # sites = sites[!(sites$Site %in% as.character(nodeflow$Category[to_remove])),]
     #
     #
-    while(flow$value > ceiling(pop*0.001)){
+    if(is.na(iter)){
+      while(flow$value > ceiling(pop*0.001)){
 
-      weight <- graph_from_adjacency_matrix(network,  mode="directed", weighted = TRUE)
+        weight <- graph_from_adjacency_matrix(network,  mode="directed", weighted = TRUE)
 
-      sourcename = rownames(network)[1]
-      sinkname =  colnames(network)[length(colnames(network))]
+        sourcename = rownames(network)[1]
+        sinkname =  colnames(network)[length(colnames(network))]
 
-      # run the population through the network a forst time
-      flow = max_flow(weight, source = V(weight)[sourcename],
-                      target = V(weight)[sinkname],
-                      E(weight)$weight)
+        # run the population through the network a forst time
+        flow = max_flow(weight, source = V(weight)[sourcename],
+                        target = V(weight)[sinkname],
+                        E(weight)$weight)
 
-      nodes = get.edgelist(weight, names=TRUE)
-      nodes = as.data.frame(nodes)
-      nodes$flow = flow$flow
-      # nodes$V1 <- substring(nodes$V1, 2)
-      # nodes$V2 <- substring(nodes$V2, 2)
+        nodes = get.edgelist(weight, names=TRUE)
+        nodes = as.data.frame(nodes)
+        nodes$flow = flow$flow
+        # nodes$V1 <- substring(nodes$V1, 2)
+        # nodes$V2 <- substring(nodes$V2, 2)
 
-      nodeflow = merge(aggregate(nodes$flow, by=list(Category=as.character(nodes$V1)), FUN=sum),
-                       aggregate(nodes$flow, by=list(Category=as.character(nodes$V2)), FUN=sum), all=T)
-      nodeflow$x = as.numeric(nodeflow$x)
+        nodeflow = merge(aggregate(nodes$flow, by=list(Category=as.character(nodes$V1)), FUN=sum),
+                         aggregate(nodes$flow, by=list(Category=as.character(nodes$V2)), FUN=sum), all=T)
+        nodeflow$x = as.numeric(nodeflow$x)
 
-      nodeflow = data.frame( unique(as.matrix(nodeflow[ , 1:2 ]) ))
-      nodeflow$x = as.numeric(as.character(nodeflow$x))
+        nodeflow = data.frame( unique(as.matrix(nodeflow[ , 1:2 ]) ))
+        nodeflow$x = as.numeric(as.character(nodeflow$x))
 
-      nodeflow = nodeflow[nodeflow$Category != "supersource" & nodeflow$Category != "supersink",]
-      to_remove = which(nodeflow$x %in% min(nodeflow$x))[1]
+        nodeflow = nodeflow[nodeflow$Category != "supersource" & nodeflow$Category != "supersink",]
+        to_remove = which(nodeflow$x %in% min(nodeflow$x))[1]
 
-      betweenness <- betweenness(weight, weights = flow$flow+0.0001)
-      # names(betweenness) <- substring(names(betweenness), 2)
-      between <- c()
-      for (n in as.character(nodeflow$Category[to_remove])){
-        between <- c(between, sum(betweenness[which(names(betweenness) == n)]))
+        betweenness <- betweenness(weight, weights = flow$flow+0.0001)
+        # names(betweenness) <- substring(names(betweenness), 2)
+        between <- c()
+        for (n in as.character(nodeflow$Category[to_remove])){
+          between <- c(between, sum(betweenness[which(names(betweenness) == n)]))
+        }
+
+
+
+        prioritisation <- rbind(prioritisation,
+                                data.frame(Site=as.character(nodeflow$Category[to_remove]),
+                                           Pop_Flow =   flow$value,
+                                           Site_Flow =   nodeflow$x[to_remove],
+                                           betweenness = between,
+                                           average_path = average.path.length(weight)))
+
+        if ("B" %in% degrade){
+          network[1,which(network[1,] >0)] <- unlist(lapply(which(network[1,] >0),
+                                                            function(x) return(network[1,x] -(network[1,x] * runif(1,mindeg,maxdeg)/100))))
+          network[,ncol(network)] <- rev(network[1,])
+        }
+
+        if("NB"  %in% degrade){
+          rid <- which(rownames(network) %in% sites$Site[sites$NB == 1])[1:length(which(sites$NB == 1))]
+          cid <- which(colnames(network) %in% sites$Site[sites$NB == 1])[(length(which(sites$NB == 1))+1):(length(which(sites$NB == 1))*2)]
+          replace <- network[rid, cid]
+          replace[replace>0] <- unlist(lapply(which(replace >0),
+                                              function(x) return(replace[x] -(replace[x] * runif(1,mindeg,maxdeg)/100))))
+
+          network[rid, cid] <- replace
+          rm(rid)
+          rm(cid)
+          rm(replace)
+
+        }
+        if ("STP" %in% degrade){
+          cid <- which(colnames(network) %in% which(sites$NM == 1 & sites$SM == 1))
+          network[,cid]<-apply(network[,cid],2, function(x) x -(x * runif(1,mindeg,maxdeg)/100))
+          rm(cid)
+
+        }
+        network[network<0]<- 0
+
       }
 
+    } else{
+      for(z in 1:iter){
+        # if(flow$value > ceiling(pop*0.001)){
+
+        weight <- graph_from_adjacency_matrix(network,  mode="directed", weighted = TRUE)
+
+        sourcename = rownames(network)[1]
+        sinkname =  colnames(network)[length(colnames(network))]
+
+        # run the population through the network a forst time
+        flow = max_flow(weight, source = V(weight)[sourcename],
+                        target = V(weight)[sinkname],
+                        E(weight)$weight)
+
+        nodes = get.edgelist(weight, names=TRUE)
+        nodes = as.data.frame(nodes)
+        nodes$flow = flow$flow
+        # nodes$V1 <- substring(nodes$V1, 2)
+        # nodes$V2 <- substring(nodes$V2, 2)
+
+        nodeflow = merge(aggregate(nodes$flow, by=list(Category=as.character(nodes$V1)), FUN=sum),
+                         aggregate(nodes$flow, by=list(Category=as.character(nodes$V2)), FUN=sum), all=T)
+        nodeflow$x = as.numeric(nodeflow$x)
+
+        nodeflow = data.frame( unique(as.matrix(nodeflow[ , 1:2 ]) ))
+        nodeflow$x = as.numeric(as.character(nodeflow$x))
+
+        nodeflow = nodeflow[nodeflow$Category != "supersource" & nodeflow$Category != "supersink",]
+        to_remove = which(nodeflow$x %in% min(nodeflow$x))[1]
+
+        betweenness <- betweenness(weight, weights = flow$flow+0.0001)
+        # names(betweenness) <- substring(names(betweenness), 2)
+        between <- c()
+        for (n in as.character(nodeflow$Category[to_remove])){
+          between <- c(between, sum(betweenness[which(names(betweenness) == n)]))
+        }
 
 
-      prioritisation <- rbind(prioritisation,
-                              data.frame(Site=as.character(nodeflow$Category[to_remove]),
-                                         Pop_Flow =   flow$value,
-                                         Site_Flow =   nodeflow$x[to_remove],
-                                         betweenness = between,
-                                         average_path = average.path.length(weight)))
 
-      if ("B" %in% degrade){
-        network[1,which(network[1,] >0)] <- unlist(lapply(which(network[1,] >0),
-                                                          function(x) return(network[1,x] -(network[1,x] * runif(1,mindeg,maxdeg)/100))))
-        network[,ncol(network)] <- rev(network[1,])
+        prioritisation <- rbind(prioritisation,
+                                data.frame(Site=as.character(nodeflow$Category[to_remove]),
+                                           Pop_Flow =   flow$value,
+                                           Site_Flow =   nodeflow$x[to_remove],
+                                           betweenness = between,
+                                           average_path = average.path.length(weight)))
+
+        if ("B" %in% degrade){
+          network[1,which(network[1,] >0)] <- unlist(lapply(which(network[1,] >0),
+                                                            function(x) return(network[1,x] -(network[1,x] * runif(1,mindeg,maxdeg)/100))))
+          network[,ncol(network)] <- rev(network[1,])
+        }
+
+        if("NB"  %in% degrade){
+          rid <- which(rownames(network) %in% sites$Site[sites$NB == 1])[1:length(which(sites$NB == 1))]
+          cid <- which(colnames(network) %in% sites$Site[sites$NB == 1])[(length(which(sites$NB == 1))+1):(length(which(sites$NB == 1))*2)]
+          replace <- network[rid, cid]
+          replace[replace>0] <- unlist(lapply(which(replace >0),
+                                              function(x) return(replace[x] -(replace[x] * runif(1,mindeg,maxdeg)/100))))
+
+          network[rid, cid] <- replace
+          rm(rid)
+          rm(cid)
+          rm(replace)
+
+        }
+        if ("STP" %in% degrade){
+          cid <- which(colnames(network) %in% which(sites$NM == 1 & sites$SM == 1))
+          network[,cid]<-apply(network[,cid],2, function(x) x -(x * runif(1,mindeg,maxdeg)/100))
+          rm(cid)
+
+        }
+        network[network<0]<- 0
+
+        if (flow$value <= ceiling(pop*0.001)) break
+
       }
+    }#}
 
-      if("NB"  %in% degrade){
-        rid <- which(rownames(network) %in% sites$Site[sites$NB == 1])[1:length(which(sites$NB == 1))]
-        cid <- which(colnames(network) %in% sites$Site[sites$NB == 1])[(length(which(sites$NB == 1))+1):(length(which(sites$NB == 1))*2)]
-        replace <- network[rid, cid]
-        replace[replace>0] <- unlist(lapply(which(replace >0),
-                                            function(x) return(replace[x] -(replace[x] * runif(1,mindeg,maxdeg)/100))))
 
-        network[rid, cid] <- replace
-        rm(rid)
-        rm(cid)
-        rm(replace)
 
-      }
-      if ("STP" %in% degrade){
-        cid <- which(colnames(network) %in% which(sites$NM == 1 & sites$SM == 1))
-        network[,cid]<-apply(network[,cid],2, function(x) x -(x * runif(1,mindeg,maxdeg)/100))
-        rm(cid)
-
-      }
-      network[network<0]<- 0
-
-    }
 
     y = prioritisation$Pop_Flow/prioritisation$Pop_Flow[1]
     x = (1:length(prioritisation$Pop_Flow))/length(prioritisation$Pop_Flow)
