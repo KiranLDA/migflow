@@ -24,9 +24,9 @@ randomCENTRAL <- function(nbreeding = 10,
                           toplot = TRUE){
 
   # # # For testing purposes
-  # nbreeding = 10
-  # nwintering = 10
-  # nstop = 30
+  # nbreeding = 30
+  # nwintering = 30
+  # nstop = 34
   # pop = 100000
   # # mean_dist = 0
   # # sd_dist = 800
@@ -57,28 +57,47 @@ randomCENTRAL <- function(nbreeding = 10,
                   NB = 0,
                   NM = 0)
 
-  NB <- data.frame(Lat = c(runif(floor(nwintering/4), min=-20, max=-15),
-                           runif(floor(nwintering/4), min=-20, max=20),
-                           runif(ceiling(nwintering/4), min=15, max=20),
-                           runif(ceiling(nwintering/4), min=-20, max=20)),
-                   Lon = c(runif(floor(nwintering/4), min=-20, max=20),
-                           runif(floor(nwintering/4), min=-20, max=-15),
-                           runif(ceiling(nwintering/4), min=-20, max=20),
-                           runif(ceiling(nwintering/4), min=15, max=20)),
+
+  #make random number of wintering sites per side (top bottom right left)
+  samples <- runif(4,0.1,0.8)
+  samples <- samples/sum(samples)
+  winter_sites <- round(nwintering *samples)
+  id <- round(runif(1,1,4))
+  winter_sites[id] <- winter_sites[id] + (nwintering - sum(winter_sites))
+
+
+  #make random number of wintering sites per side (top bottom right left)
+  samples <- runif(4,0.1,0.8)
+  samples <- samples/sum(samples)
+  stop_sites <- round(nstop *samples)
+  id <- round(runif(1,1,4))
+  stop_sites[id] <- stop_sites[id] + (nstop - sum(stop_sites))
+
+
+  NB <- data.frame(Lat = c(runif(winter_sites[1], min=-20, max=-15),
+                           runif(winter_sites[2], min=-20, max=20),
+                           runif(winter_sites[3], min=15, max=20),
+                           runif(winter_sites[4], min=-20, max=20)),
+                   Lon = c(runif(winter_sites[1], min=-20, max=20),
+                           runif(winter_sites[2], min=-20, max=-15),
+                           runif(winter_sites[3], min=-20, max=20),
+                           runif(winter_sites[4], min=15, max=20)),
                    Pop=runif(nwintering, min=500, max=10000),
                    B = 0,
                    SM = 0,
                    NB = 1,
                    NM = 0)
 
-  STP <- data.frame(Lat = c(runif(floor(nstop/4), min=-15, max=-5),
-                            runif(floor(nstop/4), min=-15, max=15),
-                            runif(ceiling(nstop/4), min=5, max=15),
-                            runif(ceiling(nstop/4), min=-15, max=15)),
-                    Lon= c(runif(floor(nstop/4), min=-15, max=15),
-                           runif(floor(nstop/4), min=-15, max=-5),
-                           runif(ceiling(nstop/4), min=-15, max=15),
-                           runif(ceiling(nstop/4), min=5, max=15)),
+
+
+  STP <- data.frame(Lat = c(runif(stop_sites[1], min=-15, max=-5),
+                            runif(stop_sites[2], min=-15, max=15),
+                            runif(stop_sites[3], min=5, max=15),
+                            runif(stop_sites[4], min=-15, max=15)),
+                    Lon= c(runif(stop_sites[1], min=-15, max=15),
+                           runif(stop_sites[2], min=-15, max=-5),
+                           runif(stop_sites[3], min=-15, max=15),
+                           runif(stop_sites[4], min=5, max=15)),
                     Pop=runif(nstop, min=500, max=10000),
                     B = 0,
                     SM = 1,
