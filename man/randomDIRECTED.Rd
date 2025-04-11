@@ -4,8 +4,15 @@
 \alias{randomDIRECTED}
 \title{Generate a random network}
 \usage{
-randomDIRECTED(nbreeding = 3, nwintering = 4, nstop = 10,
-  pop = 1e+05, mean_dist = 1000, sd_dist = 200, toplot = TRUE)
+randomDIRECTED(
+  nbreeding = 3,
+  nwintering = 4,
+  nstop = 10,
+  pop = 1e+05,
+  mean_dist = 1000,
+  sd_dist = 200,
+  toplot = TRUE
+)
 }
 \arguments{
 \item{nbreeding}{Number of breeding sites}

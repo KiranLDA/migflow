@@ -4,8 +4,7 @@
 \alias{prioritiseFLOW}
 \title{Prioritise sites according to population flow}
 \usage{
-prioritiseFLOW(network, sites, toplot = TRUE, pop = 1e+05,
-  returnNET = TRUE)
+prioritiseFLOW(network, sites, toplot = TRUE, pop = 1e+05, returnNET = TRUE)
 }
 \arguments{
 \item{network}{adjacency network describing where birds are going}

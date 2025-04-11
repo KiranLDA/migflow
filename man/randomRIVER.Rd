@@ -4,9 +4,16 @@
 \alias{randomRIVER}
 \title{Generate a random network}
 \usage{
-randomRIVER(nwintering = 4, nbreeding = 10, nstop = 40,
-  pop = 1e+05, toplot = TRUE, minforks = 2, maxforks = 5,
-  anadromous = TRUE)
+randomRIVER(
+  nwintering = 4,
+  nbreeding = 10,
+  nstop = 40,
+  pop = 1e+05,
+  toplot = TRUE,
+  minforks = 2,
+  maxforks = 5,
+  anadromous = TRUE
+)
 }
 \arguments{
 \item{nwintering}{number of nonbreeding residency/wintering sites.}

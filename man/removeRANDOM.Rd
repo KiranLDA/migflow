@@ -4,8 +4,7 @@
 \alias{removeRANDOM}
 \title{Prioritise sites according to population flow}
 \usage{
-removeRANDOM(network, sites, toplot = TRUE, pop = 1e+05,
-  returnNET = TRUE)
+removeRANDOM(network, sites, toplot = TRUE, pop = 1e+05, returnNET = TRUE)
 }
 \arguments{
 \item{network}{adjacency network describing where birds are going}

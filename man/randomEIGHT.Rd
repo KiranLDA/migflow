@@ -4,9 +4,16 @@
 \alias{randomEIGHT}
 \title{Generate a random network}
 \usage{
-randomEIGHT(pop = 1e+05, toplot = TRUE, nbreeding = 5,
-  nwintering = 10, npre = 20, npost = 20, mean_dist = 2000,
-  sd_dist = 1000)
+randomEIGHT(
+  pop = 1e+05,
+  toplot = TRUE,
+  nbreeding = 5,
+  nwintering = 10,
+  npre = 20,
+  npost = 20,
+  mean_dist = 2000,
+  sd_dist = 1000
+)
 }
 \arguments{
 \item{pop}{population size flowing through network}

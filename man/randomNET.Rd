@@ -4,10 +4,19 @@
 \alias{randomNET}
 \title{Generate a random network}
 \usage{
-randomNET(nsites = 10, nedges = "ALL", nbreeding = 3,
-  nwintering = 4, pop = 1e+05, mean_dist = 2000, sd_dist = 1000,
-  Latrange = c(-20, 40), Lonrange = c(-10, 10), Poprange = c(100,
-  10000), toplot = TRUE)
+randomNET(
+  nsites = 10,
+  nedges = "ALL",
+  nbreeding = 3,
+  nwintering = 4,
+  pop = 1e+05,
+  mean_dist = 2000,
+  sd_dist = 1000,
+  Latrange = c(-20, 40),
+  Lonrange = c(-10, 10),
+  Poprange = c(100, 10000),
+  toplot = TRUE
+)
 }
 \arguments{
 \item{nsites}{number of sites to be generated in the network}

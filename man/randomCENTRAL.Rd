@@ -4,8 +4,13 @@
 \alias{randomCENTRAL}
 \title{Generate a random network}
 \usage{
-randomCENTRAL(nbreeding = 10, nwintering = 10, nstop = 30,
-  pop = 1e+05, toplot = TRUE)
+randomCENTRAL(
+  nbreeding = 10,
+  nwintering = 10,
+  nstop = 30,
+  pop = 1e+05,
+  toplot = TRUE
+)
 }
 \arguments{
 \item{nbreeding}{Number of breeding sites}

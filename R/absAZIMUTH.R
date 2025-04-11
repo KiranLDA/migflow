@@ -12,7 +12,7 @@
 #' dist <- point2DIST(dta)
 #' absAZIMUTH(dist=dist, lonlats=dta)
 #'
-#' @importFrom maptools gzAzimuth
+#' @importFrom geosphere bearing
 #'
 #' @export
 absAZIMUTH <- function(dist, lonlats){
@@ -28,7 +28,8 @@ absAZIMUTH <- function(dist, lonlats){
    xLat = lonlats$Lat[as.character(lonlats$Site) == index0[x,3]]
    yLon = lonlats$Lon[as.character(lonlats$Site) == index0[x,4]]
    yLat = lonlats$Lat[as.character(lonlats$Site) == index0[x,4]]
-   z = gzAzimuth(c(xLon,xLat),c(yLon,yLat))
+   # z = gzAzimuth(c(xLon,xLat),c(yLon,yLat))
+   z = bearing(c(xLon,xLat),c(yLon,yLat))
    if(is.na(z)) z=90
    return(abs(cos(z*pi/180)))}))
  output[index0[,3], index0[,4]] <- as.numeric(index0[,6])

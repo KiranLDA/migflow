@@ -4,9 +4,16 @@
 \alias{randomSTAR}
 \title{Generate a random network}
 \usage{
-randomSTAR(pop = 1e+05, toplot = TRUE, nbreeding = 8,
-  nwintering = 4, nstop = 40, minforks = 2, maxforks = 5,
-  anadromous = TRUE)
+randomSTAR(
+  pop = 1e+05,
+  toplot = TRUE,
+  nbreeding = 8,
+  nwintering = 4,
+  nstop = 40,
+  minforks = 2,
+  maxforks = 5,
+  anadromous = TRUE
+)
 }
 \arguments{
 \item{pop}{population size flowing through network}

@@ -4,8 +4,15 @@
 \alias{randomDIFFUSE}
 \title{Generate a random network}
 \usage{
-randomDIFFUSE(nbreeding = 10, nwintering = 10, nstop = 30,
-  pop = 1e+05, mean_dist = 0, sd_dist = 1500, toplot = TRUE)
+randomDIFFUSE(
+  nbreeding = 10,
+  nwintering = 10,
+  nstop = 30,
+  pop = 1e+05,
+  mean_dist = 0,
+  sd_dist = 1500,
+  toplot = TRUE
+)
 }
 \arguments{
 \item{nbreeding}{Number of breeding sites}

@@ -4,9 +4,17 @@
 \alias{degradeSITES}
 \title{Gradually degrade sites}
 \usage{
-degradeSITES(network, sites, degrade = c("B", "STP", "NB"), mindeg = 1,
-  maxdeg = 10, toplot = TRUE, pop = 1e+05, iter = NA,
-  returnNET = TRUE)
+degradeSITES(
+  network,
+  sites,
+  degrade = c("B", "STP", "NB"),
+  mindeg = 1,
+  maxdeg = 10,
+  toplot = TRUE,
+  pop = 1e+05,
+  iter = NA,
+  returnNET = TRUE
+)
 }
 \arguments{
 \item{network}{adjacency network describing where birds are going}

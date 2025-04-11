@@ -4,8 +4,11 @@
 \alias{point2DIST}
 \title{Make a distance matrix}
 \usage{
-point2DIST(dta, miles = FALSE,
-  proj4string = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs ")
+point2DIST(
+  dta,
+  miles = FALSE,
+  proj4string = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs "
+)
 }
 \arguments{
 \item{dta}{This is a dataframe. Columns of interest must be named: Site, Lat (for latitude), Lon (for longitude).}

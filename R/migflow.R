@@ -1,9 +1,9 @@
-#' maxflow
+#' migflow
 #'
-#' This package calculates the maximum flow through a network using integel linear programming.
+#' This package calculates the maximum flow through a network using integer linear programming.
 #'
-#'
-#' @docType package
+#' @keywords internal
+#' "_PACKAGE"
 #'
 #' @author Kiran Dhanjal-Adams \email{kiran.dhanjal.adams@gmail.com}
 #'
@@ -13,6 +13,6 @@
 #' @import igraph
 #' @importFrom graphics par segments points
 #' @importFrom grDevices colorRampPalette
-#' @importFrom maptools gzAzimuth
+#' @importFrom geosphere bearing
 #' @importFrom stats aggregate approxfun density rnorm runif
 NULL
