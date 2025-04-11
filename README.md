@@ -30,7 +30,7 @@ The package relies on there being a little tracking data (start & stop latitude 
 
 ```r
 # load library
-library(maxflow)
+library(migflow)
 
 # Simulate 10 fake tracks with a mean distance of 500km
 tracks <- rnorm(10, 500, 200)
