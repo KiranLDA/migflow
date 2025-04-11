@@ -79,49 +79,44 @@ rand_net = randomNET(nsites=15,pop=pop)
 This uses a reverse greedy approch to find sites which contribute least to population flow, remove them, and reallocate population flow through the network based on the carrying capacity of remaining sites. This process is done iteratively until no sites are left.
 
 ```r
+# with a return network
+net <- randomPARALLEL(nwintering=5, sd_dist=2000, nbreeding=3, nstop = 20)
+
+network <- shortenNET(net$network, from = "Ssupersink", to = "Nsupersink")
+
+
+colnames(network)[1]<- rownames(network)[1] <- "Ssupersource"
+colnames(network)[length(colnames(network))] <-  "Nsupersink"
+rownames(network)[length(rownames(network))] <- "Nsupersink"
+sites <- net$sites
+
 # priotise sites according to flow through network
-prioritiseFLOW(rand_net$network, rand_net$sites)
+prioritiseFLOW(network, sites, toplot=TRUE, returnNET=TRUE)
+
 ```
 
-<img align="center" src="https://raw.githubusercontent.com/KiranLDA/migflow/master/pictures/network_prioritisation.png">
+<img align="center" src="https://raw.githubusercontent.com/KiranLDA/migflow/master/pictures/3-20-5.png">
 
 
-### This allows us to compare with networks, with for instance fewer edges
+### This allows us to compare with networks, with for instance fewer stopover sites
+
 
 ```r
-# with fewer edges
-pop=100000
-rand_net = randomNET(nsites=15,pop=pop, nedges=40)
+# with a return network
+net <- randomPARALLEL(nwintering=5, sd_dist=2000, nbreeding=3, nstop = 3)
+
+network <- shortenNET(net$network, from = "Ssupersink", to = "Nsupersink")
+
+colnames(network)[1]<- rownames(network)[1] <- "Ssupersource"
+colnames(network)[length(colnames(network))] <-  "Nsupersink"
+rownames(network)[length(rownames(network))] <- "Nsupersink"
+sites <- net$sites
 
 # priotise sites according to flow through network
-prioritiseFLOW(rand_net$network, rand_net$sites)
+prioritiseFLOW(network, sites, toplot=TRUE, returnNET=TRUE)
+
 ```
-
-<img align="center" src="https://raw.githubusercontent.com/KiranLDA/migflow/master/pictures/fewer_edges.png">
-
-### Describing networks using curve shape
-
-```r
-pop=100000
-rand_net = randomNET(nsites=100,nbreeding=3, nwintering=3,pop=pop, mean_dist = 8000, sd_dist=9000, plot=F)
-
-# priotise sites according to flow through network
-prioritisation = prioritiseFLOW(rand_net$network, rand_net$sites, plot=F)
-
-y=(prioritisation$prioritisation$Pop_Flow/pop)
-x=(1:length(prioritisation$prioritisation$Pop_Flow))/length(prioritisation$prioritisation$Pop_Flow)
-
-# calculate area under curve
-AUC = curvCALC(x,y)
-par(mfrow=c(1,1), mar=c(4,4,2,1))
-plot(x,y,type="o",pch=20, 
-      xlab = "proportion of sites lost",
-      ylab = "proportion of population lost",
-      main = paste0("Curve = ",AUC))
-```
-
-
-<img align="center" src="https://raw.githubusercontent.com/KiranLDA/migflow/master/pictures/AUC.png">
+<img align="center" src="https://raw.githubusercontent.com/KiranLDA/migflow/master/pictures/3-3-5.png">
 
 
 ## Authors
