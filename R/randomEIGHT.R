@@ -447,7 +447,7 @@ randomEIGHT <- function(pop = 100000,
   #created a weigted igraph network
   # if (toplot == TRUE){
     # plot flow network
-    nodes = get.edgelist(weight, names=TRUE)
+    nodes = as_edgelist(weight, names=TRUE)
     nodes = as.data.frame(nodes)
     nodes$flow = flow$flow
     nodes$V1 <- substring(nodes$V1, 2)

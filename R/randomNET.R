@@ -108,7 +108,7 @@ randomNET <- function(nsites=10,
     plot(sites$Lon[index], sites$Lat[index], pch=16,
          cex=0)
 
-    nodes = get.edgelist(weight, names=TRUE)
+    nodes = as_edgelist(weight, names=TRUE)
     nodes = as.data.frame(nodes)
     nodes$flow = flow$flow
 

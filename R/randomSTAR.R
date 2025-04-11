@@ -258,7 +258,7 @@ randomSTAR <- function(pop = 100000,
   flow = max_flow(weight, source = V(weight)["supersource"],
                   target = V(weight)["supersink"], capacity = E(weight)$weight )
 
-  nodes = get.edgelist(weight, names=TRUE)
+  nodes = as_edgelist(weight, names=TRUE)
   nodes = as.data.frame(nodes)
   nodes$flow = flow$flow
   nodes$Lat_from = unlist(lapply(1:nrow(nodes), function(i) as.numeric(site_list$Lat[site_list$Site %in% nodes[i,1]])))
@@ -354,7 +354,7 @@ randomSTAR <- function(pop = 100000,
   sites <-site_list
 
   # plot flow network
-  nodes = get.edgelist(weight, names=TRUE)
+  nodes = as_edgelist(weight, names=TRUE)
   nodes = as.data.frame(nodes)
   nodes$flow = flow$flow
   nodes$V1 <- substring(nodes$V1, 2)

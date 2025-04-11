@@ -67,7 +67,7 @@ degradeSITES <- function(network,
                     capacity = E(weight)$weight )
 
 
-    nodes = get.edgelist(weight, names=TRUE)
+    nodes = as_edgelist(weight, names=TRUE)
     nodes = as.data.frame(nodes)
     nodes$flow = flow$flow #E(weight)$weight#
     # nodes3 <- nodes
@@ -198,7 +198,7 @@ degradeSITES <- function(network,
                         target = V(weight)[sinkname],
                         E(weight)$weight)
 
-        nodes = get.edgelist(weight, names=TRUE)
+        nodes = as_edgelist(weight, names=TRUE)
         nodes = as.data.frame(nodes)
         nodes$flow = flow$flow
         # nodes$V1 <- substring(nodes$V1, 2)
@@ -273,7 +273,7 @@ degradeSITES <- function(network,
                         target = V(weight)[sinkname],
                         E(weight)$weight)
 
-        nodes = get.edgelist(weight, names=TRUE)
+        nodes = as_edgelist(weight, names=TRUE)
         nodes = as.data.frame(nodes)
         nodes$flow = flow$flow
         # nodes$V1 <- substring(nodes$V1, 2)
